@@ -5,7 +5,6 @@ on:
     branches:
       - master
 
-
 jobs:
   build:
     name: Build and analyze
@@ -36,4 +35,4 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Francisco-Solano_TFG-Workly_4e070196-4fd1-44ee-b6b6-3a53e1ae407f -Dsonar.projectName='TFG-Workly'
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -f BackEnd/TFG-Workly/pom.xml -Dsonar.projectKey=Francisco-Solano_TFG-Workly_4e070196-4fd1-44ee-b6b6-3a53e1ae407f -Dsonar.projectName='TFG-Workly'
