@@ -1,7 +1,7 @@
 # Read Me First
 The following was discovered as part of building this project:
 
-* The original package name 'com.vedruna.TFG.TFG-Workly' is invalid and this project uses 'com.vedruna.TFG.TFG_Workly' instead.
+* The original package name 'com.vedruna.TFG-Workly' is invalid and this project uses 'com.vedruna.TFG_Workly' instead.
 
 # Getting Started
 
