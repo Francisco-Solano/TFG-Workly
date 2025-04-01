@@ -1,42 +1,50 @@
-name: Build
+name: Build and Test
 
 on:
   push:
     branches:
       - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build:
-    name: Build and analyze
     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for better analysis relevancy
-      
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: 21
-          distribution: 'zulu' # Alternative distribution options are available.
-      
-      - name: Cache SonarQube packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      
-      - name: Cache Maven packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-      
-      - name: Build and analyze
+    services:
+      mysql:
+        image: mysql:8.0
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: mvn clean install -Dfile.encoding=UTF-8 -f BackEnd/TFG-Workly/pom.xml verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Francisco-Solano_TFG-Workly_4e070196-4fd1-44ee-b6b6-3a53e1ae407f -Dsonar.projectName='TFG-Workly'
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: testdb
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
+
+    steps:
+      # Paso 1: Comprobar el código
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Paso 2: Configurar JDK 21 (asegúrate de que coincida con tu versión local)
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      # Paso 3: Configurar el caché de Maven (para acelerar las dependencias)
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      # Paso 4: Construir y ejecutar los tests
+      - name: Build and test
+        run: mvn clean test -Dspring.datasource.url=jdbc:mysql://localhost:3306/testdb -Dspring.datasource.username=user -Dspring.datasource.password=password
