@@ -49,4 +49,4 @@ jobs:
       - name: Build and test
         run: |
           cd BackEnd/TFG-Workly  # Cambiar al directorio donde está el archivo pom.xml
-          mvn clean test -Dspring.datasource.url=jdbc:mysql://localhost:3306/testdb -Dspring.datasource.username=user -Dspring.datasource.password=password
+          mvn clean test -Dspring.profiles.active=github -Dspring.datasource.url=jdbc:mysql://localhost:3306/testdb -Dspring.datasource.username=user -Dspring.datasource.password=password
