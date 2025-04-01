@@ -45,6 +45,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      # Paso 4: Construir y ejecutar los tests
+      # Paso 4: Cambiar al directorio donde está el archivo pom.xml y ejecutar Maven
       - name: Build and test
-        run: mvn clean test -Dspring.datasource.url=jdbc:mysql://localhost:3306/testdb -Dspring.datasource.username=user -Dspring.datasource.password=password
+        run: |
+          cd BackEnd/TFG-Workly  # Cambiar al directorio donde está el archivo pom.xml
+          mvn clean test -Dspring.datasource.url=jdbc:mysql://localhost:3306/testdb -Dspring.datasource.username=user -Dspring.datasource.password=password
