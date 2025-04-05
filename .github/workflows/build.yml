@@ -69,6 +69,5 @@ jobs:
       - name: SonarQube Analysis
         uses: sonarsource/sonarcloud-github-action@v2
         with:
-          sonar-project-key: ${{ secrets.SONAR_PROJECT_KEY }}
-          sonar-host-url: ${{ secrets.SONAR_HOST_URL }}
-          sonar-login: ${{ secrets.SONAR_TOKEN }}
+          projectBaseDir: .  # El directorio base del proyecto
+          args: "-Dsonar.login=${{ secrets.SONAR_TOKEN }}"  # Usa el token de SonarCloud desde los secretos
