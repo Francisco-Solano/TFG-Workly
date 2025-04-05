@@ -13,16 +13,14 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: workly_db  # Usamos workly_db en vez de testdb
-          MYSQL_USER: ${{ secrets.DB_USER }}  # Usar un secreto para el usuario
-          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}  # Usar un secreto para la contraseña
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
+     mysql:
+      image: mysql:8.0
+      env:
+       MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}  # Usar el secreto para la contraseña de root
+       MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}  # Usar el secreto para el nombre de la base de datos
+      ports:
+       - 3306:3306
+      options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
 
     steps:
       # Paso 1: Comprobar el código
