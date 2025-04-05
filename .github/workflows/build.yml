@@ -18,8 +18,8 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: workly_db  # Usamos workly_db en vez de testdb
-          MYSQL_USER: user
-          MYSQL_PASSWORD: password
+          MYSQL_USER: ${{ secrets.DB_USER }}  # Usar un secreto para el usuario
+          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}  # Usar un secreto para la contraseña
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
@@ -49,7 +49,7 @@ jobs:
       - name: Build and test Backend
         run: |
           cd BackEnd/TFG-Workly  # Cambiar al directorio donde está el archivo pom.xml
-          mvn clean test -Dspring.profiles.active=github -Dspring.datasource.url=jdbc:mysql://localhost:3306/workly_db -Dspring.datasource.username=user -Dspring.datasource.password=password
+          mvn clean test -Dspring.profiles.active=github -Dspring.datasource.url=jdbc:mysql://localhost:3306/workly_db -Dspring.datasource.username=${{ secrets.DB_USER }} -Dspring.datasource.password=${{ secrets.DB_PASSWORD }}
 
       # Paso 5: Configuración para el Frontend (React)
       - name: Set up Node.js and Install dependencies for Frontend
@@ -74,4 +74,3 @@ jobs:
           sonar-project-key: ${{ secrets.SONAR_PROJECT_KEY }}
           sonar-host-url: ${{ secrets.SONAR_HOST_URL }}
           sonar-login: ${{ secrets.SONAR_TOKEN }}
-
