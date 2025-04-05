@@ -70,4 +70,5 @@ jobs:
         uses: sonarsource/sonarcloud-github-action@v2
         with:
           projectBaseDir: .  # El directorio base del proyecto
-          args: "-Dsonar.login=${{ secrets.SONAR_TOKEN }}"  # Usa el token de SonarCloud desde los secretos
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # Establecer el token como variable de entorno
