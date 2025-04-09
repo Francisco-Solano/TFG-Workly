@@ -13,16 +13,14 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: testdb
-          MYSQL_USER: user
-          MYSQL_PASSWORD: password
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
+     mysql:
+      image: mysql:8.0
+      env:
+       MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}  # Usar el secreto para la contraseña de root
+       MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}  # Usar el secreto para el nombre de la base de datos
+      ports:
+       - 3306:3306
+      options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
 
     steps:
       # Paso 1: Comprobar el código
@@ -45,8 +43,32 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      # Paso 4: Cambiar al directorio donde está el archivo pom.xml y ejecutar Maven
-      - name: Build and test
+      # Paso 4: Cambiar al directorio donde está el archivo pom.xml y ejecutar Maven para backend
+      - name: Build and test Backend
         run: |
           cd BackEnd/TFG-Workly  # Cambiar al directorio donde está el archivo pom.xml
-          mvn clean test -Dspring.profiles.active=github -Dspring.datasource.url=jdbc:mysql://localhost:3306/testdb -Dspring.datasource.username=user -Dspring.datasource.password=password
+          mvn clean test -Dspring.profiles.active=github -Dspring.datasource.url=jdbc:mysql://localhost:3306/workly_db -Dspring.datasource.username=${{ secrets.DB_USER }} -Dspring.datasource.password=${{ secrets.DB_PASSWORD }}
+
+      # Paso 5: Configuración para el Frontend (React)
+      - name: Set up Node.js and Install dependencies for Frontend
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'  # Usa la versión de Node.js que necesitas
+          
+      - name: Install dependencies for Frontend
+        run: |
+          cd FrontEnd/frontend  # Cambia al directorio donde se encuentra tu frontend
+          npm install  # Instala las dependencias de React y Tailwind
+
+      - name: Build Frontend
+        run: |
+          cd FrontEnd/frontend  # Cambia al directorio donde se encuentra tu frontend
+          npm run build  # Genera la versión de producción del frontend
+
+      # Paso 6: Realizar el análisis de SonarQube
+      - name: SonarQube Analysis
+        uses: sonarsource/sonarcloud-github-action@v2
+        with:
+          projectBaseDir: .  # El directorio base del proyecto
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # Establecer el token como variable de entorno
