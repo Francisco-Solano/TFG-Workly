@@ -15,7 +15,7 @@ public interface ITareaRepository extends JpaRepository<Tarea,Integer> {
     List<Tarea> findByEstado(String estado);
     List<Tarea> findByPrioridad(String prioridad);
     List<Tarea> findByFechaLimiteBefore(Date fecha);
-    List<Tarea> findByAsignaciones_Usuario_UsuarioId(Integer usuarioId); // tareas asignadas al usuario
+    List<Tarea> findByUsuarioAsignado(Integer usuarioId); // tareas asignadas al usuario
     List<Tarea> findByTituloContainingIgnoreCase(String texto); // búsqueda por título
 
 }

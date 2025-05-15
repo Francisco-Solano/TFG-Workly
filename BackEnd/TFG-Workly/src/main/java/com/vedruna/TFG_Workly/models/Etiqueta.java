@@ -4,7 +4,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "etiquetas")
@@ -24,7 +27,5 @@ public class Etiqueta {
     private String color;
 
     @ManyToMany(mappedBy = "etiquetas")
-    private List<Tarea> tareas;
-
-
+    private Set<Tarea> tareas = new HashSet<>();
 }

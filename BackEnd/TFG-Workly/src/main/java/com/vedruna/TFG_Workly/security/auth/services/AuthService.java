@@ -45,7 +45,7 @@ public class AuthService implements AuthServiceI {
         user.setNombre(request.getName());
         user.setContraseña(passwordEncoder.encode(request.getPassword()));
         user.setEmail(request.getEmail());
-        user.setRol(rol.getRolName());
+        user.setUserRol(rol);
         userRepo.save(user);
     }
 }

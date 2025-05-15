@@ -6,7 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 @Entity
 @Table(name = "tareas")
 @Getter
@@ -49,12 +52,11 @@ public class Tarea {
     @OneToMany(mappedBy = "tarea", cascade = CascadeType.ALL)
     private List<Asignacion> asignaciones;
 
-    // Si quieres etiquetas como relación N-N
     @ManyToMany
     @JoinTable(
-            name = "etiquetas",
+            name = "tarea_etiqueta",  // Cambiado para evitar conflicto
             joinColumns = @JoinColumn(name = "tarea_id"),
             inverseJoinColumns = @JoinColumn(name = "etiqueta_id")
     )
-    private List<Etiqueta> etiquetas;
+    private Set<Etiqueta> etiquetas = new HashSet<>();
 }

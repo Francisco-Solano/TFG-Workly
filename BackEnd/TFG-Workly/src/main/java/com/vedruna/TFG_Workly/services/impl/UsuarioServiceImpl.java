@@ -3,46 +3,120 @@ package com.vedruna.TFG_Workly.services.impl;
 import com.vedruna.TFG_Workly.dto.ProyectoDTO;
 import com.vedruna.TFG_Workly.dto.TareaDTO;
 import com.vedruna.TFG_Workly.dto.UsuarioDTO;
+import com.vedruna.TFG_Workly.models.Proyecto;
+import com.vedruna.TFG_Workly.models.Tarea;
 import com.vedruna.TFG_Workly.models.Usuario;
+import com.vedruna.TFG_Workly.repositories.IProyectoRepository;
+import com.vedruna.TFG_Workly.repositories.ITareaRepository;
+import com.vedruna.TFG_Workly.repositories.IUsuarioRepository;
 import com.vedruna.TFG_Workly.services.UsuarioServiceI;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Service
 public class UsuarioServiceImpl implements UsuarioServiceI {
-
+    @Autowired
+    IUsuarioRepository userRepository;
+    @Autowired
+    IProyectoRepository proyectoRepository;
+    @Autowired
+    ITareaRepository tareaRepository;
 
     @Override
     public UsuarioDTO obtenerPerfil() {
-        return null;
+        // Obtener usuario autenticado del contexto de seguridad
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName(); // Suponiendo que el email es el username
+
+        Usuario user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+        return new UsuarioDTO(user);
     }
 
+
     @Override
-    public UsuarioDTO obtenerUsuarioPorId(Integer id) {
-        return null;
+    public UsuarioDTO obtenerUsuarioPorId(Integer userid) {
+        Usuario user = userRepository.findById(userid).orElseThrow(() -> new EmptyResultDataAccessException("Usuario no encontrado",1));
+        return new UsuarioDTO(user);
+
     }
 
     @Override
     public List<UsuarioDTO> obtenerUsuarios() {
-        return null;
+        List<Usuario> usuarios = userRepository.findAll();
+
+        return usuarios.stream()
+                .map(UsuarioDTO::new)
+                .collect(Collectors.toList());
     }
+
+
 
     @Override
     public List<UsuarioDTO> buscarPorEmail(String email) {
-        return null;
+        Usuario user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EmptyResultDataAccessException("Usuario no encontrado", 1));
+
+        List<UsuarioDTO> usuariosDTO = new ArrayList<>();
+        usuariosDTO.add(new UsuarioDTO(user));
+
+        return usuariosDTO;
     }
+
+
+
 
     @Override
     public UsuarioDTO actualizarPerfil(UsuarioDTO usuarioDTO) {
-        return null;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        Usuario usuario = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+        usuario.setNombre(usuarioDTO.getNombre());
+        usuario.setFoto(usuarioDTO.getFoto());
+        Usuario actualizado = userRepository.save(usuario);
+        return new UsuarioDTO(actualizado);
     }
+
 
     @Override
     public List<ProyectoDTO> obtenerProyectosDelUsuario() {
-        return null;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+
+        Usuario usuario = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+        List<Proyecto> proyectos = proyectoRepository.findByAdminUsuarioId(usuario.getUsuarioId());
+
+        return proyectos.stream()
+                .map(ProyectoDTO::new)
+                .collect(Collectors.toList());
     }
+
 
     @Override
     public List<TareaDTO> obtenerTareasAsignadas() {
-        return null;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+
+        Usuario usuario = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+        List<Tarea> tareas = tareaRepository.findByUsuarioAsignado(usuario.getUsuarioId());
+
+        return tareas.stream()
+                .map(TareaDTO::new)
+                .collect(Collectors.toList());
     }
+
 }

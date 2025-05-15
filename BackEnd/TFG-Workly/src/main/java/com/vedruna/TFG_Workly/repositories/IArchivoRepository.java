@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface IArchivoRepository extends JpaRepository<Archivo,Integer> {
-    List<Archivo> findByTarea_TareaId(Integer tareaId);
+    List<Archivo> findByTarea(Integer tareaId);
 
 }

@@ -31,8 +31,10 @@ public class Usuario implements UserDetails {
     @Column(name = "contraseña", nullable = false)
     private String contraseña;
 
-    @Column(name = "rol", nullable = false)
-    private String rol;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "rol", nullable = false)
+    private Rol userRol;
+
 
     @Column(name = "foto")
     private String foto;

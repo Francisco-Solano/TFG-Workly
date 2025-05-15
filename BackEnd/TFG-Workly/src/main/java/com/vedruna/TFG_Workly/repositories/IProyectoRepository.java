@@ -9,8 +9,14 @@ import java.util.List;
 
 @Repository
 public interface IProyectoRepository extends JpaRepository<Proyecto, Integer> {
-    List<Proyecto> findByAdminId_UsuarioId(Integer usuarioId);
+
+    // Buscar proyectos donde el admin tenga el usuarioId dado
+    List<Proyecto> findByAdminUsuarioId(Integer usuarioId);
+
+    // Buscar proyectos por visibilidad
     List<Proyecto> findByVisibilidad(Boolean visibilidad);
-    List<Proyecto> findByColaboradores_Usuario_UsuarioId(Integer usuarioId); // si tienes @OneToMany en colaborador
+
+    // Buscar proyectos donde haya un colaborador con ese usuarioId
+    List<Proyecto> findByColaboradoresUsuarioUsuarioId(Integer usuarioId);
 
 }

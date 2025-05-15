@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Otros contenidos de mi .gitignore
+/uploads/

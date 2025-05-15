@@ -30,6 +30,10 @@ public class Proyecto {
 
     @OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL)
     private List<Tabla> tablas;
+
+    @OneToMany(mappedBy = "proyecto")
+    private List<Colaborador> colaboradores;
+
 }
 
 

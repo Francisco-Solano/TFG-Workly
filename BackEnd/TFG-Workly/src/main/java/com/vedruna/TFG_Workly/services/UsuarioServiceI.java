@@ -12,7 +12,7 @@ public interface UsuarioServiceI {
     UsuarioDTO obtenerPerfil();
 
     // Obtener usuario por ID (para admin o por motivos específicos)
-    UsuarioDTO obtenerUsuarioPorId(Integer id);
+    UsuarioDTO obtenerUsuarioPorId(Integer usuarioId);
 
     //Para obtener todos los usuarios
     List<UsuarioDTO> obtenerUsuarios();

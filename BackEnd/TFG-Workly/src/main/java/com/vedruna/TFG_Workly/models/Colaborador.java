@@ -29,8 +29,6 @@ public class Colaborador {
     @Column(name = "rol", nullable = false)
     private String rol;
 
-    @OneToMany(mappedBy = "proyecto")
-    private List<Colaborador> colaboradores;
 
 }
 

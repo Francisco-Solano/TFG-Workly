@@ -11,6 +11,6 @@ import java.util.List;
 public interface IAsignacionRepository extends JpaRepository<Asignacion,Integer> {
     List<Asignacion> findByTarea_TareaId(Integer tareaId);
     List<Asignacion> findByUsuario_UsuarioId(Integer usuarioId);
-    Boolean existsByTarea_TareaIdAndUsuario_UsuarioId(Integer tareaId, Integer usuarioId);
+    Boolean existsByTarea_UsuarioId(Integer tareaId, Integer usuarioId);
 
 }
