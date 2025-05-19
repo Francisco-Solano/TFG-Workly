@@ -17,3 +17,5 @@ public class RolDTO {
         this.rolName = rol.getRolName();
     }
 }
+
+

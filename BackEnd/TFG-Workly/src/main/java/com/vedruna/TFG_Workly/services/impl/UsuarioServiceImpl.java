@@ -1,11 +1,14 @@
 package com.vedruna.TFG_Workly.services.impl;
 
+import com.vedruna.TFG_Workly.dto.AsignacionDTO;
 import com.vedruna.TFG_Workly.dto.ProyectoDTO;
 import com.vedruna.TFG_Workly.dto.TareaDTO;
 import com.vedruna.TFG_Workly.dto.UsuarioDTO;
+import com.vedruna.TFG_Workly.models.Asignacion;
 import com.vedruna.TFG_Workly.models.Proyecto;
 import com.vedruna.TFG_Workly.models.Tarea;
 import com.vedruna.TFG_Workly.models.Usuario;
+import com.vedruna.TFG_Workly.repositories.IAsignacionRepository;
 import com.vedruna.TFG_Workly.repositories.IProyectoRepository;
 import com.vedruna.TFG_Workly.repositories.ITareaRepository;
 import com.vedruna.TFG_Workly.repositories.IUsuarioRepository;
@@ -25,17 +28,25 @@ import java.util.stream.Collectors;
 public class UsuarioServiceImpl implements UsuarioServiceI {
     @Autowired
     IUsuarioRepository userRepository;
+
     @Autowired
     IProyectoRepository proyectoRepository;
+
     @Autowired
     ITareaRepository tareaRepository;
+
+    @Autowired
+    IAsignacionRepository asignacionRepository;
+
+
 
     @Override
     public UsuarioDTO obtenerPerfil() {
         // Obtener usuario autenticado del contexto de seguridad
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName(); // Suponiendo que el email es el username
 
+
+        String email = auth.getName(); // ahora sí es el email real
         Usuario user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
@@ -43,9 +54,11 @@ public class UsuarioServiceImpl implements UsuarioServiceI {
     }
 
 
+
+
     @Override
     public UsuarioDTO obtenerUsuarioPorId(Integer userid) {
-        Usuario user = userRepository.findById(userid).orElseThrow(() -> new EmptyResultDataAccessException("Usuario no encontrado",1));
+        Usuario user = userRepository.findById(userid).orElseThrow(() -> new EmptyResultDataAccessException("Usuario no encontrado", 1));
         return new UsuarioDTO(user);
 
     }
@@ -60,7 +73,6 @@ public class UsuarioServiceImpl implements UsuarioServiceI {
     }
 
 
-
     @Override
     public List<UsuarioDTO> buscarPorEmail(String email) {
         Usuario user = userRepository.findByEmail(email)
@@ -73,15 +85,13 @@ public class UsuarioServiceImpl implements UsuarioServiceI {
     }
 
 
-
-
     @Override
     public UsuarioDTO actualizarPerfil(UsuarioDTO usuarioDTO) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
-        Usuario usuario = userRepository.findByEmail(email)
+        String username = auth.getName();
+        Usuario usuario = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
-        usuario.setNombre(usuarioDTO.getNombre());
+        usuario.setUsername(usuarioDTO.getUsername());
         usuario.setFoto(usuarioDTO.getFoto());
         Usuario actualizado = userRepository.save(usuario);
         return new UsuarioDTO(actualizado);
@@ -96,7 +106,7 @@ public class UsuarioServiceImpl implements UsuarioServiceI {
         Usuario usuario = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
-        List<Proyecto> proyectos = proyectoRepository.findByAdminUsuarioId(usuario.getUsuarioId());
+        List<Proyecto> proyectos = proyectoRepository.findByUsuario_UsuarioId(usuario.getUsuarioId());
 
         return proyectos.stream()
                 .map(ProyectoDTO::new)
@@ -105,18 +115,21 @@ public class UsuarioServiceImpl implements UsuarioServiceI {
 
 
     @Override
-    public List<TareaDTO> obtenerTareasAsignadas() {
+    public List<AsignacionDTO> obtenerTareasAsignadas() {
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
 
         Usuario usuario = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
-        List<Tarea> tareas = tareaRepository.findByUsuarioAsignado(usuario.getUsuarioId());
+        List<Asignacion> tareasAsignadas = asignacionRepository.findByUsuario_UsuarioId(usuario.getUsuarioId());
 
-        return tareas.stream()
-                .map(TareaDTO::new)
+        return tareasAsignadas.stream()
+                .map(AsignacionDTO::new)
                 .collect(Collectors.toList());
     }
+
+
 
 }

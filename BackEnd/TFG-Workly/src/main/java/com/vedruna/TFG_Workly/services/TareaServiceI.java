@@ -1,5 +1,6 @@
 package com.vedruna.TFG_Workly.services;
 
+//import com.vedruna.TFG_Workly.dto.CrearTareaDTO;
 import com.vedruna.TFG_Workly.dto.CrearTareaDTO;
 import com.vedruna.TFG_Workly.dto.TareaDTO;
 
@@ -38,7 +39,7 @@ public interface TareaServiceI {
     void asignarUsuario(Integer tareaId, Integer usuarioId);
 
     // Desasignar usuario de la tarea
-    void desasignarUsuario(Integer tareaId, Integer usuarioId);
+   void desasignarUsuario(Integer tareaId, Integer usuarioId);
 
     // Establecer o actualizar fecha límite
     void actualizarFechaLimite(Integer tareaId, Date nuevaFechaLimite);
@@ -49,3 +50,5 @@ public interface TareaServiceI {
     // Listar tareas asignadas al usuario autenticado
     List<TareaDTO> listarTareasAsignadasAlUsuario();
 }
+
+

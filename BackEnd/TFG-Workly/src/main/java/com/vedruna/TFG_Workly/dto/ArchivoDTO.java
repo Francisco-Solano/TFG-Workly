@@ -20,3 +20,5 @@ public class ArchivoDTO {
         this.archivoUrl = archivo.getArchivoUrl();         // URL del archivo
     }
 }
+
+

@@ -26,3 +26,5 @@ public class EtiquetaDTO {
                 .collect(Collectors.toList());
     }
 }
+
+

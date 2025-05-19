@@ -26,3 +26,5 @@ public interface EtiquetaServiceI {
     // Quitar una etiqueta de una tarea
     void quitarEtiquetaDeTarea(Integer etiquetaId, Integer tareaId);
 }
+
+

@@ -17,3 +17,5 @@ public interface AsignacionServiceI {
     // Eliminar una asignación (desasignar usuario de la tarea)
     void eliminarAsignacion(Integer asignacionId);
 }
+
+

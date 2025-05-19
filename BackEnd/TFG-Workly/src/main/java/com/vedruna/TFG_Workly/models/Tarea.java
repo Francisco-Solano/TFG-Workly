@@ -33,6 +33,11 @@ public class Tarea {
     @Column(name = "prioridad")
     private String prioridad; // También recomendable usar Enum
 
+    @ManyToOne
+    @JoinColumn(name = "proyecto_id") // Asegúrate que este sea el nombre correcto de la columna
+    private Proyecto proyecto;
+
+
     @Column(name = "fecha_limite")
     private Date fechaLimite;
 
@@ -52,11 +57,18 @@ public class Tarea {
     @OneToMany(mappedBy = "tarea", cascade = CascadeType.ALL)
     private List<Asignacion> asignaciones;
 
+
+
     @ManyToMany
     @JoinTable(
             name = "tarea_etiqueta",  // Cambiado para evitar conflicto
             joinColumns = @JoinColumn(name = "tarea_id"),
             inverseJoinColumns = @JoinColumn(name = "etiqueta_id")
     )
-    private Set<Etiqueta> etiquetas = new HashSet<>();
+
+
+   private Set<Etiqueta> etiquetas = new HashSet<>();
+
+
 }
+

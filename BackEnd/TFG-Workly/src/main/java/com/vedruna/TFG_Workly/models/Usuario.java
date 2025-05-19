@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -23,7 +24,7 @@ public class Usuario implements UserDetails {
     private Integer usuarioId;
 
     @Column(name = "nombre", nullable = false)
-    private String nombre;
+    private String username;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
@@ -31,18 +32,27 @@ public class Usuario implements UserDetails {
     @Column(name = "contraseña", nullable = false)
     private String contraseña;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "rol", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "rol_id", nullable = false)
     private Rol userRol;
-
 
     @Column(name = "foto")
     private String foto;
 
-    // Puedes mejorar esto luego con roles reales
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Proyecto> proyectos;
+/*
+    @OneToMany(mappedBy = "user")
+    private List<ProjectUser> projectUsers;
+
+
+
+ */
+
+    // Implementación de UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(); // sin roles por ahora
+        return Collections.emptyList(); // Puedes devolver roles si los implementas como GrantedAuthority
     }
 
     @Override
@@ -52,7 +62,7 @@ public class Usuario implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.nombre; // o usa `nombre` si prefieres
+        return this.email;
     }
 
     @Override

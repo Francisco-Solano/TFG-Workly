@@ -1,9 +1,7 @@
 package com.vedruna.TFG_Workly.models;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -12,11 +10,15 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Proyecto {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "proyecto_id")
     private Integer proyectoId;
+
 
     @Column(nullable = false)
     private String nombre;
@@ -24,15 +26,21 @@ public class Proyecto {
     @Column(name = "visibilidad", nullable = false)
     private boolean visibilidad;
 
-    @ManyToOne
-    @JoinColumn(name = "admin_id", referencedColumnName = "usuario_id", nullable = false)
-    private Usuario admin;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
 
-    @OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tabla> tablas;
+/*
+    @OneToMany(mappedBy = "project")
+    private List<ProjectUser> projectUsers;
 
-    @OneToMany(mappedBy = "proyecto")
+ */
+
+    @OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Colaborador> colaboradores;
+
 
 }
 

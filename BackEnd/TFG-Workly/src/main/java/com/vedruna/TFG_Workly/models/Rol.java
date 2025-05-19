@@ -16,24 +16,23 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+@Entity
 @NoArgsConstructor
 @Getter
 @Setter
-@Entity
 @Table(name = "roles")
 public class Rol {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "rol_id", nullable = false)
-    Integer rolId;
+    private Integer rolId;
 
     @NotBlank(message = "Rol name is required and must not be blank")
     @Size(max = 45, message = "Rol name must be at most 45 characters long")
     @Column(name = "rol_name", nullable = false, unique = true)
-    String rolName;
+    private String rolName;
 
-    @OneToMany(mappedBy = "userRol",
-            cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    List<Usuario> usersWithThisRol;
+    @OneToMany(mappedBy = "userRol", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Usuario> usuarios;
 }

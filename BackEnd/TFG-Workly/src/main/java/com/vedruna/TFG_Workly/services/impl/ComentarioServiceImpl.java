@@ -54,7 +54,7 @@ public class ComentarioServiceImpl implements ComentarioServiceI {
 
     @Override
     public List<ComentarioDTO> listarComentariosPorTarea(Integer tareaId) {
-        List<Comentario> comentarios = comentarioRepository.findByTareaId(tareaId);
+        List<Comentario> comentarios = comentarioRepository.findByTarea_TareaId(tareaId);
         return comentarios.stream().map(ComentarioDTO::new).collect(Collectors.toList());
     }
 
@@ -79,3 +79,5 @@ public class ComentarioServiceImpl implements ComentarioServiceI {
         comentarioRepository.deleteById(comentarioId);
     }
 }
+
+

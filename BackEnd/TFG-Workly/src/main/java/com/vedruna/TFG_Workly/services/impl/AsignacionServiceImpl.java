@@ -30,7 +30,7 @@ public class AsignacionServiceImpl implements AsignacionServiceI {
     @Override
     public AsignacionDTO asignarTareaAUsuario(Integer tareaId, Integer usuarioId) {
         // Verifica si ya está asignada
-        if (asignacionRepository.existsByTarea_UsuarioId(tareaId, usuarioId)) {
+        if (asignacionRepository.existsByTarea_TareaIdAndUsuario_UsuarioId(tareaId, usuarioId)) {
             throw new IllegalArgumentException("El usuario ya está asignado a esta tarea.");
         }
 
@@ -71,3 +71,5 @@ public class AsignacionServiceImpl implements AsignacionServiceI {
         asignacionRepository.deleteById(asignacionId);
     }
 }
+
+

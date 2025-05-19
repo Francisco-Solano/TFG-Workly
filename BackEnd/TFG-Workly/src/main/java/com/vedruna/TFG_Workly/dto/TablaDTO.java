@@ -26,8 +26,13 @@ public class TablaDTO {
         this.posicion = tabla.getPosicion();
         this.color = tabla.getColor();
         this.proyectoId = tabla.getProyecto().getProyectoId();
+
         this.tareas = tabla.getTareas().stream()
                 .map(TareaDTO::new) // Mapeamos las tareas a su correspondiente DTO
                 .collect(Collectors.toList());
+
+
     }
 }
+
+

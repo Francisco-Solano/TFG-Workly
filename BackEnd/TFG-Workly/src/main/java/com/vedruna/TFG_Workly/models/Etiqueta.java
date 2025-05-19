@@ -29,3 +29,5 @@ public class Etiqueta {
     @ManyToMany(mappedBy = "etiquetas")
     private Set<Tarea> tareas = new HashSet<>();
 }
+
+

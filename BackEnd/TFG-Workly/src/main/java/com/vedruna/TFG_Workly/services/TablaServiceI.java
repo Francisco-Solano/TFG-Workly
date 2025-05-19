@@ -23,3 +23,5 @@ public interface TablaServiceI {
     // Eliminar una tabla
     void eliminarTabla(Integer tablaId);
 }
+
+

@@ -20,3 +20,5 @@ public class AsignacionDTO {
         this.usuarioId = asignacion.getUsuario().getUsuarioId();  // ID del usuario asignado
     }
 }
+
+

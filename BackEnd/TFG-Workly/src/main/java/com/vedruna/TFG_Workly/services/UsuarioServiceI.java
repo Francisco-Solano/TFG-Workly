@@ -1,5 +1,6 @@
 package com.vedruna.TFG_Workly.services;
 
+import com.vedruna.TFG_Workly.dto.AsignacionDTO;
 import com.vedruna.TFG_Workly.dto.ProyectoDTO;
 import com.vedruna.TFG_Workly.dto.TareaDTO;
 import com.vedruna.TFG_Workly.dto.UsuarioDTO;
@@ -27,6 +28,6 @@ public interface UsuarioServiceI {
     List<ProyectoDTO> obtenerProyectosDelUsuario();
 
     // Listar todas las tareas asignadas a este usuario
-    List<TareaDTO> obtenerTareasAsignadas();
+    List<AsignacionDTO> obtenerTareasAsignadas();
 
 }

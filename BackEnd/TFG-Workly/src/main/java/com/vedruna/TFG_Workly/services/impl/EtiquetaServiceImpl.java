@@ -110,3 +110,5 @@ public class EtiquetaServiceImpl implements EtiquetaServiceI {
         }
     }
 }
+
+

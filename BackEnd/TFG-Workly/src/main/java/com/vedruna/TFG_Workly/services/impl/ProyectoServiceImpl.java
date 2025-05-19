@@ -2,9 +2,11 @@ package com.vedruna.TFG_Workly.services.impl;
 
 import com.vedruna.TFG_Workly.dto.ProyectoDTO;
 import com.vedruna.TFG_Workly.dto.UsuarioDTO;
+//import com.vedruna.TFG_Workly.models.Colaborador;
 import com.vedruna.TFG_Workly.models.Colaborador;
 import com.vedruna.TFG_Workly.models.Proyecto;
 import com.vedruna.TFG_Workly.models.Usuario;
+//import com.vedruna.TFG_Workly.repositories.IColaboradorRepository;
 import com.vedruna.TFG_Workly.repositories.IColaboradorRepository;
 import com.vedruna.TFG_Workly.repositories.IProyectoRepository;
 import com.vedruna.TFG_Workly.repositories.IUsuarioRepository;
@@ -23,8 +25,11 @@ public class ProyectoServiceImpl implements ProyectoServiceI {
     IProyectoRepository proyectoRepository;
     @Autowired
      IUsuarioRepository usuarioRepository;
+
     @Autowired
     IColaboradorRepository colaboradorRepository;
+
+
 
     @Autowired
     public ProyectoServiceImpl(IProyectoRepository proyectoRepository, IUsuarioRepository usuarioRepository) {
@@ -34,13 +39,16 @@ public class ProyectoServiceImpl implements ProyectoServiceI {
 
     @Override
     public ProyectoDTO crearProyecto(ProyectoDTO proyectoDTO) {
+        System.out.println("adminId recibido: " + proyectoDTO.getAdminId());
+
         Usuario admin = usuarioRepository.findById(proyectoDTO.getAdminId())
                 .orElseThrow(() -> new EntityNotFoundException("Usuario administrador no encontrado"));
 
         Proyecto proyecto = new Proyecto();
         proyecto.setNombre(proyectoDTO.getNombre());
         proyecto.setVisibilidad(proyectoDTO.isVisibilidad());
-        proyecto.setAdmin(admin);
+        proyecto.setUsuario(admin);
+
 
         Proyecto guardado = proyectoRepository.save(proyecto);
         return new ProyectoDTO(guardado);
@@ -79,15 +87,17 @@ public class ProyectoServiceImpl implements ProyectoServiceI {
     public List<ProyectoDTO> listarProyectosUsuario() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        Usuario usuario = usuarioRepository.findByNombre(username)
+        Usuario usuario = usuarioRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
-        List<Proyecto> proyectos = proyectoRepository.findByColaboradoresUsuarioUsuarioId(usuario.getUsuarioId());
+        List<Proyecto> proyectos = proyectoRepository.findByUsuario_UsuarioId(usuario.getUsuarioId());
 
         return proyectos.stream()
                 .map(ProyectoDTO::new)
                 .collect(Collectors.toList());
     }
+
+
 
     @Override
     public void añadirColaborador(Integer proyectoId, Integer usuarioId, String rol) {
@@ -97,7 +107,7 @@ public class ProyectoServiceImpl implements ProyectoServiceI {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
-        boolean yaEsColaborador = colaboradorRepository.existsByProyecto_UsuarioId(proyectoId, usuarioId);
+        boolean yaEsColaborador = colaboradorRepository.existsByProyecto_ProyectoIdAndProyecto_Usuario_UsuarioId(proyectoId, usuarioId);
         if (yaEsColaborador) {
             throw new IllegalArgumentException("El usuario ya es colaborador de este proyecto");
         }
@@ -113,7 +123,7 @@ public class ProyectoServiceImpl implements ProyectoServiceI {
 
     @Override
     public void eliminarColaborador(Integer proyectoId, Integer usuarioId) {
-        Colaborador colaborador = colaboradorRepository.findByProyecto_UsuarioId(proyectoId, usuarioId)
+        Colaborador colaborador = colaboradorRepository.findByProyecto_ProyectoIdAndProyecto_Usuario_UsuarioId(proyectoId, usuarioId)
                 .orElseThrow(() -> new EntityNotFoundException("Colaborador no encontrado"));
 
         colaboradorRepository.delete(colaborador);
@@ -149,3 +159,5 @@ public class ProyectoServiceImpl implements ProyectoServiceI {
         return proyectos.stream().map(ProyectoDTO::new).collect(Collectors.toList());
     }
 }
+
+

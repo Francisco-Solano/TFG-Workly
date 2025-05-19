@@ -6,3 +6,4 @@ public interface RolServiceI {
     RolDTO selectRolById(Integer id);
     RolDTO selectRolByName(String rolName);
 }
+

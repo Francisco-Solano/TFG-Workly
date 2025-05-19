@@ -33,7 +33,11 @@ public class Tabla {
 
     @OneToMany(mappedBy = "tabla", cascade = CascadeType.ALL)
     private List<Tarea> tareas;
+
+
 }
+
+
 
 
 

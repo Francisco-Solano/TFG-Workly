@@ -22,8 +22,12 @@ public class TareaDTO {
 
     // Relaciones opcionales (según tu lógica de negocio)
     private List<SubtareaDTO> subtareas;
+
     private List<ComentarioDTO> comentarios;
+
     private List<EtiquetaDTO> etiquetas;
+
+
 
     public TareaDTO(Tarea tarea) {
         this.tareaId = tarea.getTareaId();
@@ -41,5 +45,11 @@ public class TareaDTO {
 
         this.etiquetas = tarea.getEtiquetas() != null ?
                 tarea.getEtiquetas().stream().map(EtiquetaDTO::new).collect(Collectors.toList()) : null;
+
+
+
+
     }
 }
+
+

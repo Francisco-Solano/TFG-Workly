@@ -22,3 +22,5 @@ public class ColaboradorDTO {
         this.rol = colaborador.getRol();
     }
 }
+
+

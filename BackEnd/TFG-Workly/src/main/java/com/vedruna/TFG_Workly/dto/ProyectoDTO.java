@@ -23,9 +23,16 @@ public class ProyectoDTO {
         this.proyectoId = proyecto.getProyectoId();
         this.nombre = proyecto.getNombre();
         this.visibilidad = proyecto.isVisibilidad();
-        this.adminId = proyecto.getAdmin().getUsuarioId(); // Solo el ID del administrador
+        this.adminId = proyecto.getUsuario().getUsuarioId(); // Solo el ID del administrador
+
         this.tablaIds = proyecto.getTablas().stream()
                 .map(tabla -> tabla.getTablaId()) // Obtenemos los IDs de las tablas asociadas
                 .collect(Collectors.toList());
+
+
     }
 }
+
+
+
+

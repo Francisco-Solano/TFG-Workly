@@ -45,6 +45,8 @@ public class ProyectoController {
         return ResponseEntity.ok(proyectoService.listarProyectosUsuario());
     }
 
+
+
     @PutMapping("/{id}/visibilidad")
     public ResponseEntity<ProyectoDTO> cambiarVisibilidad(@PathVariable Integer id, @RequestParam boolean publica) {
         return ResponseEntity.ok(proyectoService.cambiarVisibilidad(id, publica));
@@ -78,4 +80,8 @@ public class ProyectoController {
     public ResponseEntity<List<UsuarioDTO>> listarColaboradores(@PathVariable Integer id) {
         return ResponseEntity.ok(proyectoService.listarColaboradores(id));
     }
+
+
 }
+
+

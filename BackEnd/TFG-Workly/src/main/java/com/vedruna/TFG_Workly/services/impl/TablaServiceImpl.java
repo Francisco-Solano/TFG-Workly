@@ -80,3 +80,5 @@ public class TablaServiceImpl implements TablaServiceI {
         tablaRepository.deleteById(tablaId);
     }
 }
+
+

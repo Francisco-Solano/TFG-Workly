@@ -9,7 +9,9 @@ import java.util.List;
 
 @Repository
 public interface IComentarioRepository extends JpaRepository<Comentario,Integer> {
-    List<Comentario> findByTareaId(Integer tareaId);
+    List<Comentario> findByTarea_TareaId(Integer tareaId);
     List<Comentario> findByUsuario_UsuarioId(Integer usuarioId);
 
 }
+
+

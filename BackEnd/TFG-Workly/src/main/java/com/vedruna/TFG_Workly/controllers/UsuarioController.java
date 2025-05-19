@@ -1,5 +1,6 @@
 package com.vedruna.TFG_Workly.controllers;
 
+import com.vedruna.TFG_Workly.dto.AsignacionDTO;
 import com.vedruna.TFG_Workly.dto.ProyectoDTO;
 import com.vedruna.TFG_Workly.dto.TareaDTO;
 import com.vedruna.TFG_Workly.dto.UsuarioDTO;
@@ -47,8 +48,11 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.obtenerProyectosDelUsuario());
     }
 
+
     @GetMapping("/tareas")
-    public ResponseEntity<List<TareaDTO>> obtenerTareasAsignadas() {
+    public ResponseEntity<List<AsignacionDTO>> obtenerTareasAsignadas() {
         return ResponseEntity.ok(usuarioService.obtenerTareasAsignadas());
     }
+
+
 }

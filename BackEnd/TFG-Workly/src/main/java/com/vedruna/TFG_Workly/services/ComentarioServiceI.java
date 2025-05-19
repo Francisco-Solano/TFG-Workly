@@ -20,3 +20,5 @@ public interface ComentarioServiceI {
     // Eliminar un comentario (puede hacerlo el autor o el admin del proyecto)
     void eliminarComentario(Integer comentarioId);
 }
+
+

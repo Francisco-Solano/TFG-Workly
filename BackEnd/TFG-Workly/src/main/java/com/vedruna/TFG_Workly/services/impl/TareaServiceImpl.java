@@ -1,5 +1,6 @@
 package com.vedruna.TFG_Workly.services.impl;
 
+//import com.vedruna.TFG_Workly.dto.CrearTareaDTO;
 import com.vedruna.TFG_Workly.dto.CrearTareaDTO;
 import com.vedruna.TFG_Workly.dto.TareaDTO;
 import com.vedruna.TFG_Workly.dto.UsuarioDTO;
@@ -31,11 +32,15 @@ public class TareaServiceImpl implements TareaServiceI {
     @Autowired
     IEtiquetaRepository etiquetaRepository;
 
+
+
     @Autowired
     IUsuarioRepository usuarioRepository;
 
     @Autowired
     private IAsignacionRepository asignacionRepository;
+
+
 
 
     @Override
@@ -70,6 +75,8 @@ public class TareaServiceImpl implements TareaServiceI {
         // Devolver DTO
         return new TareaDTO(tareaGuardada);
     }
+
+
 
 
 
@@ -122,6 +129,8 @@ public class TareaServiceImpl implements TareaServiceI {
 
         return new TareaDTO(tareaExistente);
     }
+
+
 
 
     @Override
@@ -199,9 +208,11 @@ public class TareaServiceImpl implements TareaServiceI {
         }   }
 
 
+
+
     @Override
     public void asignarUsuario(Integer tareaId, Integer usuarioId) {
-        boolean yaAsignado = asignacionRepository.existsByTarea_UsuarioId(tareaId, usuarioId);
+        boolean yaAsignado = asignacionRepository.existsByTarea_TareaIdAndUsuario_UsuarioId(tareaId, usuarioId);
         if (yaAsignado) {
             return; // O lanzar una excepción si lo prefieres
         }
@@ -232,6 +243,8 @@ public class TareaServiceImpl implements TareaServiceI {
     }
 
 
+
+
     @Override
     public void actualizarFechaLimite(Integer tareaId, Date nuevaFechaLimite) {
         Tarea tarea = tareaRepository.findById(tareaId)
@@ -245,7 +258,7 @@ public class TareaServiceImpl implements TareaServiceI {
         Tabla tabla = tablaRepository.findById(tablaId)
                 .orElseThrow(() -> new EntityNotFoundException("Tabla no encontrada con ID: " + tablaId));
 
-        List<Tarea> tareas = tareaRepository.findByTablaID_TablaId(tablaId);
+        List<Tarea> tareas = tareaRepository.findByTabla_TablaId(tablaId);
         return tareas.stream().map(TareaDTO::new).toList();
     }
 
@@ -268,4 +281,8 @@ public class TareaServiceImpl implements TareaServiceI {
         return tareasDTO;
     }
 
+
+
 }
+
+

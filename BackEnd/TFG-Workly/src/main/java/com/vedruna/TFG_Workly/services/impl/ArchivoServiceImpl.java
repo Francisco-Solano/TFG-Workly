@@ -64,11 +64,11 @@ public class ArchivoServiceImpl implements ArchivoServiceI {
 
 
     @Override
-    public List<ArchivoDTO> obtenerArchivosDeTarea(Integer tareaId) {
-        Tarea tarea = tareaRepository.findById(tareaId)
-                .orElseThrow(() -> new EntityNotFoundException("Tarea no encontrada con ID: " + tareaId));
+    public List<ArchivoDTO> obtenerArchivosDeTarea(Tarea tarea) {
+         tarea = tareaRepository.findById(tarea.getTareaId())
+                .orElseThrow(() -> new EntityNotFoundException("Tarea no encontrada"));
 
-        List<Archivo> archivos = archivoRepository.findByTarea(tareaId);
+        List<Archivo> archivos = archivoRepository.findByTarea(tarea);
 
         return archivos.stream()
                 .map(ArchivoDTO::new)
@@ -93,3 +93,5 @@ public class ArchivoServiceImpl implements ArchivoServiceI {
     }
 
 }
+
+

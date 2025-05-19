@@ -1,4 +1,5 @@
 package com.vedruna.TFG_Workly.models;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,3 +32,5 @@ public class Subtarea {
 
 
 }
+
+

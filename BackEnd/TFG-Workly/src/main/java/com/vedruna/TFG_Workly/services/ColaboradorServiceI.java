@@ -21,3 +21,5 @@ public interface ColaboradorServiceI {
     // Ver si un usuario específico es colaborador de un proyecto
     boolean esColaborador(Integer proyectoId, Integer usuarioId);
 }
+
+

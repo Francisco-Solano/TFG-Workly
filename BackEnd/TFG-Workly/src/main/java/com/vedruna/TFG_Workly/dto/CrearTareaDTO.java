@@ -19,3 +19,5 @@ public class CrearTareaDTO {
     private Integer tablaId;
     private List<Integer> etiquetaIds;
 }
+
+

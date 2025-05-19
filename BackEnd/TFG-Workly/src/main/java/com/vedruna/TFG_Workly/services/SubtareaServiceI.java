@@ -23,3 +23,5 @@ public interface SubtareaServiceI {
     // Listar subtareas de una tarea
     List<SubtareaDTO> listarSubtareasPorTarea(Integer tareaId);
 }
+
+

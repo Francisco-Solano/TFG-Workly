@@ -22,3 +22,5 @@ public class SubtareaDTO {
         this.tareaId = subtarea.getTarea().getTareaId(); // Solo el ID de la tarea
     }
 }
+
+

@@ -10,6 +10,8 @@ import java.util.List;
 @Repository
 public interface ITablaRepository extends JpaRepository<Tabla,Integer> {
     List<Tabla> findByProyecto_ProyectoId(Integer proyectoId);
-    List<Tabla> findByProyectoId(Integer proyectoId);
+    List<Tabla> findByProyectoProyectoId(Integer proyectoId);
 
 }
+
+

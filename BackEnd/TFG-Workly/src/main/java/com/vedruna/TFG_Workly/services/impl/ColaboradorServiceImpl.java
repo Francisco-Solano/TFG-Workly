@@ -36,7 +36,7 @@ public class ColaboradorServiceImpl implements ColaboradorServiceI {
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
         // Verifica si ya existe ese colaborador
-        Optional<Colaborador> existente = colaboradorRepository.findByProyecto_UsuarioId(proyectoId, usuarioId);
+        Optional<Colaborador> existente = colaboradorRepository.findByProyecto_ProyectoIdAndProyecto_Usuario_UsuarioId(proyectoId, usuarioId);
         if (existente.isPresent()) {
             throw new IllegalArgumentException("El usuario ya es colaborador de este proyecto");
         }
@@ -76,6 +76,7 @@ public class ColaboradorServiceImpl implements ColaboradorServiceI {
 
     @Override
     public boolean esColaborador(Integer proyectoId, Integer usuarioId) {
-        return colaboradorRepository.existsByProyecto_UsuarioId(proyectoId, usuarioId);
+        return colaboradorRepository.existsByProyecto_ProyectoIdAndProyecto_Usuario_UsuarioId(proyectoId, usuarioId);
     }
 }
+

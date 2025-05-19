@@ -82,3 +82,5 @@ public class SubtareaServiceImpl implements SubtareaServiceI {
         return subtareas.stream().map(SubtareaDTO::new).collect(Collectors.toList());
     }
 }
+
+
