@@ -2,6 +2,9 @@ package com.vedruna.TFG_Workly.controllers;
 
 import com.vedruna.TFG_Workly.dto.ProyectoDTO;
 import com.vedruna.TFG_Workly.dto.UsuarioDTO;
+import com.vedruna.TFG_Workly.models.Usuario;
+import com.vedruna.TFG_Workly.security.auth.dto.UserRegisterDTO;
+import com.vedruna.TFG_Workly.security.auth.dto.UsuarioResponseDTO;
 import com.vedruna.TFG_Workly.services.ProyectoServiceI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +19,9 @@ public class ProyectoController {
 
     private final ProyectoServiceI proyectoService;
 
-    @PostMapping
+
+
+    @PostMapping("/crear")
     public ResponseEntity<ProyectoDTO> crearProyecto(@RequestBody ProyectoDTO proyectoDTO) {
         ProyectoDTO nuevo = proyectoService.crearProyecto(proyectoDTO);
         return ResponseEntity.ok(nuevo);

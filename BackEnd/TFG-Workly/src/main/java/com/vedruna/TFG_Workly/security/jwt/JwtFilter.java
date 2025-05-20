@@ -15,6 +15,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -38,33 +39,44 @@ public class JwtFilter extends OncePerRequestFilter {
     UserDetailsService userService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
             throws ServletException, IOException {
+
+        String path = request.getServletPath();
+        // <- Aquí añadimos esta línea:
+        if (path.startsWith("/auth/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         String token = extractToken(request);
         System.out.println("JwtFilter - Token extraído: " + token);
 
         if (token != null && tokenProvider.isValidToken(token)) {
-            String username = tokenProvider.getUsernameFromToken(token);
-            System.out.println("JwtFilter - Username del token: " + username);
+            String email = tokenProvider.getEmailFromToken(token);
+            System.out.println("JwtFilter - Email del token: " + email);
 
-            UserDetails user = userService.loadUserByUsername(username);
-            System.out.println("JwtFilter - UserDetails cargado: " + user);
+            try {
+                UserDetails user = userService.loadUserByUsername(email);
+                System.out.println("JwtFilter - UserDetails cargado: " + user);
 
-            Collection<? extends GrantedAuthority> authorities = extractAuthoritiesFromToken(token);
+                UsernamePasswordAuthenticationToken auth =
+                        new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(auth);
 
-            UsernamePasswordAuthenticationToken auth =
-                    new UsernamePasswordAuthenticationToken(user, null, authorities);
-            SecurityContextHolder.getContext().setAuthentication(auth);
-
-
-
+            } catch (UsernameNotFoundException ex) {
+                // Si no existe, simplemente no autenticamos aquí
+                System.out.println("JwtFilter - Usuario no encontrado en token: " + email);
+            }
         } else {
             System.out.println("JwtFilter - Token inválido o no presente");
         }
 
         filterChain.doFilter(request, response);
     }
+
 
     private String extractToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");

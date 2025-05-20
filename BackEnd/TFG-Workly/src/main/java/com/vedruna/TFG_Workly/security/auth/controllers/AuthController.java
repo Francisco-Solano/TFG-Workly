@@ -1,47 +1,80 @@
 package com.vedruna.TFG_Workly.security.auth.controllers;
 
+import com.vedruna.TFG_Workly.models.Rol;
+import com.vedruna.TFG_Workly.models.Usuario;
+import com.vedruna.TFG_Workly.repositories.IRolRepository;
+import com.vedruna.TFG_Workly.repositories.IUsuarioRepository;
+import com.vedruna.TFG_Workly.security.auth.dto.UsuarioResponseDTO;
 import com.vedruna.TFG_Workly.security.jwt.JwtTokenProvider;
 import com.vedruna.TFG_Workly.security.auth.dto.LoginRequest;
 import com.vedruna.TFG_Workly.security.auth.dto.LoginResponse;
 import com.vedruna.TFG_Workly.security.auth.dto.UserRegisterDTO;
-import com.vedruna.TFG_Workly.security.model.UserEntity;
-import com.vedruna.TFG_Workly.security.service.UserEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
+@RequestMapping("/auth")
 public class AuthController {
+
     @Autowired
-    private UserEntityService userService;
+    private IUsuarioRepository usuarioRepository;
+
     @Autowired
     private AuthenticationManager authManager;
+
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private IRolRepository rolRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    @PostMapping("/auth/register")
-    public UserEntity save(@RequestBody UserRegisterDTO userDTO){
-        return  this.userService.save(userDTO);
+    @PostMapping("/register")
+    public UsuarioResponseDTO register(@RequestBody UserRegisterDTO userDTO) {
+        Usuario usuario = new Usuario();
+        usuario.setEmail(userDTO.email());
+        usuario.setUsername(userDTO.username());
+        usuario.setPassword(passwordEncoder.encode(userDTO.password()));
+
+        Rol rolUser = rolRepository.findByRolName("ROLE_USER")
+                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+        usuario.setUserRol(rolUser);
+
+        Usuario savedUser = usuarioRepository.save(usuario);
+
+        // Devolver solo lo necesario, en forma de DTO
+        return new UsuarioResponseDTO(
+                savedUser.getUsuarioId(),
+                savedUser.getUsername(),
+                savedUser.getEmail(),
+                savedUser.getUserRol().getRolName()
+        );
     }
 
-    @PostMapping("/auth/login")
-    public LoginResponse save(@RequestBody LoginRequest loginDTO){
-        Authentication authDTO = new UsernamePasswordAuthenticationToken(loginDTO.username(), loginDTO.password());
 
-        Authentication authentication = this.authManager.authenticate(authDTO);
-        UserEntity user = (UserEntity) authentication.getPrincipal();
 
-        String token = this.jwtTokenProvider.generateToken(authentication);
+    @PostMapping("/login")
+    public LoginResponse login(@RequestBody LoginRequest loginDTO){
+        Authentication authInputToken =
+                new UsernamePasswordAuthenticationToken(loginDTO.email(), loginDTO.password());
 
-        return new LoginResponse(user.getUsername(),
-                user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList(),
-                token);
+        Authentication authentication = this.authManager.authenticate(authInputToken);
+        Usuario user = (Usuario) authentication.getPrincipal();
+
+        String token = jwtTokenProvider.generateToken(authentication);
+
+        return new LoginResponse(
+                user.getEmail(),
+                List.of(user.getUserRol().getRolName()), // Lista de roles como string
+                token
+        );
     }
-
 }

@@ -88,8 +88,8 @@ public class UsuarioServiceImpl implements UsuarioServiceI {
     @Override
     public UsuarioDTO actualizarPerfil(UsuarioDTO usuarioDTO) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        Usuario usuario = userRepository.findByUsername(username)
+        String email = auth.getName();
+        Usuario usuario = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
         usuario.setUsername(usuarioDTO.getUsername());
         usuario.setFoto(usuarioDTO.getFoto());

@@ -1,6 +1,8 @@
 package com.vedruna.TFG_Workly.security.config;
 
+import com.vedruna.TFG_Workly.repositories.IUsuarioRepository;
 import com.vedruna.TFG_Workly.security.jwt.JwtFilter;
+import com.vedruna.TFG_Workly.security.service.UsuarioDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +20,8 @@ public class SecurityConfig {
 
     @Autowired
     JwtFilter jwtFilter;
+    @Autowired
+    IUsuarioRepository usuarioRepository;
 
 
     @Bean
@@ -37,6 +41,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests()
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/api/v1/usuarios/**").hasRole("USER")
+                .requestMatchers("/api/v1/proyectos/**").hasRole("USER")
                 .anyRequest()
                 .authenticated();
 
@@ -44,4 +49,12 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+
+
+
+
+
+
+
 }

@@ -1,6 +1,6 @@
 package com.vedruna.TFG_Workly.security.jwt;
 
-import com.vedruna.TFG_Workly.security.model.UserEntity;
+import com.vedruna.TFG_Workly.models.Usuario;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -30,7 +30,7 @@ public class JwtTokenProvider {
     Long jwtDurationSeconds;
 
     public String generateToken(Authentication authentication) {
-        UserEntity user = (UserEntity) authentication.getPrincipal();
+        Usuario user = (Usuario) authentication.getPrincipal();
 
         return Jwts.builder()
                 .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS512)
@@ -69,13 +69,14 @@ public class JwtTokenProvider {
 
 
 
-    public String getUsernameFromToken(String token){
+    public String getEmailFromToken(String token) {
         JwtParser parser = Jwts.parser()
                 .setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8)))
                 .build();
 
         Claims claims = parser.parseClaimsJws(token).getBody();
-        return  claims.get("username").toString();
+        // El subject lo pusiste como user.getEmail()
+        return claims.getSubject();
     }
 
     public Claims getClaimsFromToken(String token) {

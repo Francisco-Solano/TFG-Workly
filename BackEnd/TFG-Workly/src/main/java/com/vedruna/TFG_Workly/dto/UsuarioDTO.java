@@ -19,7 +19,8 @@ public class UsuarioDTO {
         this.username = usuario.getUsername();
         this.email = usuario.getEmail();
         this.foto = usuario.getFoto();
-        this.rol = String.valueOf(usuario.getUserRol());
+        this.rol = usuario.getUserRol().getRolName();
+
     }
 
 }
