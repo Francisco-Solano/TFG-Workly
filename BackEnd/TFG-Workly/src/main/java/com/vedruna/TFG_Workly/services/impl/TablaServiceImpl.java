@@ -1,5 +1,6 @@
 package com.vedruna.TFG_Workly.services.impl;
 
+import com.vedruna.TFG_Workly.dto.CrearTablaDTO;
 import com.vedruna.TFG_Workly.dto.TablaDTO;
 import com.vedruna.TFG_Workly.models.Proyecto;
 import com.vedruna.TFG_Workly.models.Tabla;
@@ -10,6 +11,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,19 +25,24 @@ public class TablaServiceImpl implements TablaServiceI {
     private IProyectoRepository proyectoRepository;
 
     @Override
-    public TablaDTO crearTabla(Integer proyectoId, TablaDTO tablaDTO) {
+    public TablaDTO crearTabla(Integer proyectoId, CrearTablaDTO tablaDTO) {
         Proyecto proyecto = proyectoRepository.findById(proyectoId)
                 .orElseThrow(() -> new EntityNotFoundException("Proyecto no encontrado con ID: " + proyectoId));
 
         Tabla tabla = new Tabla();
         tabla.setNombre(tablaDTO.getNombre());
-        tabla.setPosicion(tablaDTO.getPosicion());
-        tabla.setColor(tablaDTO.getColor());
         tabla.setProyecto(proyecto);
+        tabla.setPosicion(0); // Valor por defecto, si quieres
+        tabla.setColor("#FFFFFF");
+        tabla.setTareas(new ArrayList<>());
+
 
         Tabla guardada = tablaRepository.save(tabla);
         return new TablaDTO(guardada);
     }
+
+
+
 
     @Override
     public TablaDTO obtenerTablaPorId(Integer tablaId) {

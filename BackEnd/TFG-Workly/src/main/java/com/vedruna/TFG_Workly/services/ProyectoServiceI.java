@@ -1,14 +1,16 @@
 package com.vedruna.TFG_Workly.services;
 
+import com.vedruna.TFG_Workly.dto.ProyectoCreateDTO;
 import com.vedruna.TFG_Workly.dto.ProyectoDTO;
 import com.vedruna.TFG_Workly.dto.UsuarioDTO;
 import com.vedruna.TFG_Workly.models.Proyecto;
+import com.vedruna.TFG_Workly.models.Usuario;
 
 import java.util.List;
 
 public interface ProyectoServiceI {
     // Crear nuevo proyecto (solo el usuario autenticado como admin)
-    ProyectoDTO crearProyecto(ProyectoDTO proyectoDTO);
+    ProyectoDTO crearProyecto(ProyectoCreateDTO proyectoDTO, Usuario usuario);
 
     // Obtener proyecto por ID (si el usuario tiene acceso)
     ProyectoDTO obtenerProyectoPorId(Integer id);
@@ -34,8 +36,9 @@ public interface ProyectoServiceI {
     // Cambiar visibilidad (público o privado)
     ProyectoDTO cambiarVisibilidad(Integer proyectoId, boolean nuevaVisibilidad);
 
-    // Buscar proyectos públicos por nombre (para exploración)
-    List<ProyectoDTO> buscarProyectosPublicos(String nombre);
+    // Buscar proyectos públicos (para exploración)
+    List<ProyectoDTO> buscarProyectosPublicos();
+    List<ProyectoDTO> buscarProyectosPrivados();
 
 
 }

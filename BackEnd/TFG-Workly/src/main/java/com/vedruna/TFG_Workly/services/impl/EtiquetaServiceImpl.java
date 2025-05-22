@@ -1,9 +1,6 @@
 package com.vedruna.TFG_Workly.services.impl;
 
-import com.vedruna.TFG_Workly.dto.CrearTareaDTO;
-import com.vedruna.TFG_Workly.dto.EtiquetaDTO;
-import com.vedruna.TFG_Workly.dto.TareaDTO;
-import com.vedruna.TFG_Workly.dto.UsuarioDTO;
+import com.vedruna.TFG_Workly.dto.*;
 import com.vedruna.TFG_Workly.models.Etiqueta;
 import com.vedruna.TFG_Workly.models.Tabla;
 import com.vedruna.TFG_Workly.models.Tarea;
@@ -27,7 +24,7 @@ public class EtiquetaServiceImpl implements EtiquetaServiceI {
     @Autowired
     ITareaRepository tareaRepository;
     @Override
-    public EtiquetaDTO crearEtiqueta(EtiquetaDTO etiquetaDTO) {
+    public EtiquetaDTO crearEtiqueta(CrearEtiquetaDTO etiquetaDTO) {
         Etiqueta etiqueta = new Etiqueta();
         etiqueta.setNombre(etiquetaDTO.getNombre());
         etiqueta.setColor(etiquetaDTO.getColor());
@@ -102,7 +99,7 @@ public class EtiquetaServiceImpl implements EtiquetaServiceI {
         Tarea tarea = tareaRepository.findById(tareaId)
                 .orElseThrow(() -> new EntityNotFoundException("Tarea no encontrada"));
 
-        List<Etiqueta> etiquetas = (List<Etiqueta>) tarea.getEtiquetas();
+        Set<Etiqueta> etiquetas = tarea.getEtiquetas();
 
         if (etiquetas != null && etiquetas.contains(etiqueta)) {
             etiquetas.remove(etiqueta);

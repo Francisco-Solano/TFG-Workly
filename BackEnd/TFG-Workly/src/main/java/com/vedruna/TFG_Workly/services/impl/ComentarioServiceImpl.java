@@ -1,6 +1,7 @@
 package com.vedruna.TFG_Workly.services.impl;
 
 import com.vedruna.TFG_Workly.dto.ComentarioDTO;
+import com.vedruna.TFG_Workly.dto.CrearComentarioDTO;
 import com.vedruna.TFG_Workly.models.Comentario;
 import com.vedruna.TFG_Workly.models.Tarea;
 import com.vedruna.TFG_Workly.models.Usuario;
@@ -28,7 +29,7 @@ public class ComentarioServiceImpl implements ComentarioServiceI {
     private IUsuarioRepository usuarioRepository;
 
     @Override
-    public ComentarioDTO crearComentario(Integer tareaId, ComentarioDTO comentarioDTO) {
+    public ComentarioDTO crearComentario(Integer tareaId, CrearComentarioDTO comentarioDTO) {
         Tarea tarea = tareaRepository.findById(tareaId)
                 .orElseThrow(() -> new EntityNotFoundException("Tarea no encontrada"));
 

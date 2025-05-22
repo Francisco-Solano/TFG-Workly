@@ -3,6 +3,7 @@ package com.vedruna.TFG_Workly.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -31,12 +32,8 @@ public class Proyecto {
     private Usuario usuario;
 
     @OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Tabla> tablas;
-/*
-    @OneToMany(mappedBy = "project")
-    private List<ProjectUser> projectUsers;
+    private List<Tabla> tablas = new ArrayList<>();  // Inicializa aquí para evitar null
 
- */
 
     @OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Colaborador> colaboradores;

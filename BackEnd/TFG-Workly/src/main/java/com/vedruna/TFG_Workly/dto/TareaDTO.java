@@ -27,6 +27,10 @@ public class TareaDTO {
 
     private List<EtiquetaDTO> etiquetas;
 
+    private List<ArchivoDTO> archivos;
+
+    //TODO Poner archivos
+
 
 
     public TareaDTO(Tarea tarea) {
@@ -45,6 +49,9 @@ public class TareaDTO {
 
         this.etiquetas = tarea.getEtiquetas() != null ?
                 tarea.getEtiquetas().stream().map(EtiquetaDTO::new).collect(Collectors.toList()) : null;
+
+        this.archivos = tarea.getArchivos() != null ?
+                tarea.getArchivos().stream().map(ArchivoDTO::new).collect(Collectors.toList()) : null;
 
 
 

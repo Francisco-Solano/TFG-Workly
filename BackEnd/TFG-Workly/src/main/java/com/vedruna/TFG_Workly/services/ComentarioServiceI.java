@@ -1,12 +1,13 @@
 package com.vedruna.TFG_Workly.services;
 
 import com.vedruna.TFG_Workly.dto.ComentarioDTO;
+import com.vedruna.TFG_Workly.dto.CrearComentarioDTO;
 
 import java.util.List;
 
 public interface ComentarioServiceI {
     // Crear un comentario dentro de una tarea
-    ComentarioDTO crearComentario(Integer tareaId, ComentarioDTO comentarioDTO);
+    ComentarioDTO crearComentario(Integer tareaId, CrearComentarioDTO comentarioDTO);
 
     // Obtener un comentario por su ID (por si necesitas editarlo o ver detalles)
     ComentarioDTO obtenerComentarioPorId(Integer comentarioId);

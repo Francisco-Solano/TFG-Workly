@@ -1,12 +1,13 @@
 package com.vedruna.TFG_Workly.services;
 
+import com.vedruna.TFG_Workly.dto.CrearSubtareaDTO;
 import com.vedruna.TFG_Workly.dto.SubtareaDTO;
 
 import java.util.List;
 
 public interface SubtareaServiceI {
     // Crear una subtarea para una tarea
-    SubtareaDTO crearSubtarea(Integer tareaId, SubtareaDTO subtareaDTO);
+    SubtareaDTO crearSubtarea(Integer tareaId, CrearSubtareaDTO subtareaDTO);
 
     // Obtener una subtarea por ID
     SubtareaDTO obtenerSubtareaPorId(Integer subtareaId);

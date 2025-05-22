@@ -1,12 +1,13 @@
 package com.vedruna.TFG_Workly.services;
 
+import com.vedruna.TFG_Workly.dto.CrearTablaDTO;
 import com.vedruna.TFG_Workly.dto.TablaDTO;
 
 import java.util.List;
 
 public interface TablaServiceI {
     // Crear una nueva tabla dentro de un proyecto
-    TablaDTO crearTabla(Integer proyectoId, TablaDTO tablaDTO);
+    TablaDTO crearTabla(Integer proyectoId, CrearTablaDTO tablaDTO);
 
     // Obtener una tabla por su ID
     TablaDTO obtenerTablaPorId(Integer tablaId);

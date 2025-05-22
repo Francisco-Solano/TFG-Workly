@@ -1,19 +1,14 @@
 package com.vedruna.TFG_Workly.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
-public class ProyectoCreateDTO {
-    @NotBlank
+public class CrearEtiquetaDTO {
     @Getter
     @Setter
     private String nombre;
-
     @Getter
     @Setter
-    private boolean visibilidad;
-
+    private String color;
 }

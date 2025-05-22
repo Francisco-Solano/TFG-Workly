@@ -1,12 +1,13 @@
 package com.vedruna.TFG_Workly.services;
 
+import com.vedruna.TFG_Workly.dto.CrearEtiquetaDTO;
 import com.vedruna.TFG_Workly.dto.EtiquetaDTO;
 
 import java.util.List;
 
 public interface EtiquetaServiceI {
     // Crear una nueva etiqueta
-    EtiquetaDTO crearEtiqueta(EtiquetaDTO etiquetaDTO);
+    EtiquetaDTO crearEtiqueta(CrearEtiquetaDTO etiquetaDTO);
 
     // Obtener una etiqueta por su ID
     EtiquetaDTO obtenerEtiquetaPorId(Integer etiquetaId);

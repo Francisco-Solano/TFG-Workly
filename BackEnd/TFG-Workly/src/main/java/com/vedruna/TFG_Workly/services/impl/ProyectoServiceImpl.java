@@ -1,5 +1,6 @@
 package com.vedruna.TFG_Workly.services.impl;
 
+import com.vedruna.TFG_Workly.dto.ProyectoCreateDTO;
 import com.vedruna.TFG_Workly.dto.ProyectoDTO;
 import com.vedruna.TFG_Workly.dto.UsuarioDTO;
 //import com.vedruna.TFG_Workly.models.Colaborador;
@@ -13,7 +14,9 @@ import com.vedruna.TFG_Workly.repositories.IUsuarioRepository;
 import com.vedruna.TFG_Workly.services.ProyectoServiceI;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,23 +39,29 @@ public class ProyectoServiceImpl implements ProyectoServiceI {
         this.proyectoRepository = proyectoRepository;
         this.usuarioRepository = usuarioRepository;
     }
-
     @Override
-    public ProyectoDTO crearProyecto(ProyectoDTO proyectoDTO) {
-        System.out.println("adminId recibido: " + proyectoDTO.getAdminId());
-
-        Usuario admin = usuarioRepository.findById(proyectoDTO.getAdminId())
-                .orElseThrow(() -> new EntityNotFoundException("Usuario administrador no encontrado"));
+    public ProyectoDTO crearProyecto(ProyectoCreateDTO dto, Usuario usuario) {
+       usuario = getUsuarioAutenticado(); // o con el código que mencionaste
 
         Proyecto proyecto = new Proyecto();
-        proyecto.setNombre(proyectoDTO.getNombre());
-        proyecto.setVisibilidad(proyectoDTO.isVisibilidad());
-        proyecto.setUsuario(admin);
+        proyecto.setNombre(dto.getNombre());
+        proyecto.setVisibilidad(dto.isVisibilidad());
+        proyecto.setUsuario(usuario);
 
+        Proyecto proyectoGuardado = proyectoRepository.save(proyecto);
 
-        Proyecto guardado = proyectoRepository.save(proyecto);
-        return new ProyectoDTO(guardado);
+        return new ProyectoDTO(proyectoGuardado);
     }
+    public Usuario getUsuarioAutenticado() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        return usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+    }
+
+
+
+
 
     @Override
     public ProyectoDTO obtenerProyectoPorId(Integer id) {
@@ -123,7 +132,7 @@ public class ProyectoServiceImpl implements ProyectoServiceI {
 
     @Override
     public void eliminarColaborador(Integer proyectoId, Integer usuarioId) {
-        Colaborador colaborador = colaboradorRepository.findByProyecto_ProyectoIdAndProyecto_Usuario_UsuarioId(proyectoId, usuarioId)
+        Colaborador colaborador = colaboradorRepository.findByProyecto_ProyectoIdAndUsuario_UsuarioId(proyectoId, usuarioId)
                 .orElseThrow(() -> new EntityNotFoundException("Colaborador no encontrado"));
 
         colaboradorRepository.delete(colaborador);
@@ -149,15 +158,21 @@ public class ProyectoServiceImpl implements ProyectoServiceI {
         return new ProyectoDTO(actualizado);
     }
 
-    @Override
-    public List<ProyectoDTO> buscarProyectosPublicos(String nombre) {
+  @Override
+    public List<ProyectoDTO> buscarProyectosPublicos() {
         List<Proyecto> proyectos = proyectoRepository.findByVisibilidad(true)
-                .stream()
-                .filter(p -> p.getNombre().toLowerCase().contains(nombre.toLowerCase()))
-                .collect(Collectors.toList());
-
+                .stream().collect(Collectors.toList());
         return proyectos.stream().map(ProyectoDTO::new).collect(Collectors.toList());
     }
+
+    @Override
+    public List<ProyectoDTO> buscarProyectosPrivados() {
+        List<Proyecto> proyectos = proyectoRepository.findByVisibilidad(false)
+                .stream().collect(Collectors.toList());
+        return proyectos.stream().map(ProyectoDTO::new).collect(Collectors.toList());
+    }
+
+
 }
 
 

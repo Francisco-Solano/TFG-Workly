@@ -1,15 +1,23 @@
 package com.vedruna.TFG_Workly.controllers;
 
+import com.vedruna.TFG_Workly.dto.ProyectoCreateDTO;
 import com.vedruna.TFG_Workly.dto.ProyectoDTO;
 import com.vedruna.TFG_Workly.dto.UsuarioDTO;
+import com.vedruna.TFG_Workly.models.Proyecto;
 import com.vedruna.TFG_Workly.models.Usuario;
+import com.vedruna.TFG_Workly.repositories.IUsuarioRepository;
 import com.vedruna.TFG_Workly.security.auth.dto.UserRegisterDTO;
 import com.vedruna.TFG_Workly.security.auth.dto.UsuarioResponseDTO;
 import com.vedruna.TFG_Workly.services.ProyectoServiceI;
+import com.vedruna.TFG_Workly.services.UsuarioServiceI;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -17,15 +25,40 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProyectoController {
 
+
     private final ProyectoServiceI proyectoService;
+
+    private final UsuarioServiceI usuarioService;
+    private final IUsuarioRepository usuarioRepository;
 
 
 
     @PostMapping("/crear")
-    public ResponseEntity<ProyectoDTO> crearProyecto(@RequestBody ProyectoDTO proyectoDTO) {
-        ProyectoDTO nuevo = proyectoService.crearProyecto(proyectoDTO);
-        return ResponseEntity.ok(nuevo);
+    public ResponseEntity<ProyectoDTO> crearProyecto(
+            @Valid @RequestBody ProyectoCreateDTO proyectoCreateDTO,
+            Principal principal) {
+        // Obtener email o username del usuario autenticado
+        String emailUsuario = principal.getName();
+
+        // Buscar el usuario en la base de datos
+
+        Usuario usuario = usuarioRepository
+                .findByEmail(emailUsuario)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+
+
+        // Crear proyecto pasando el DTO y el usuario
+        ProyectoDTO nuevoProyecto = proyectoService.crearProyecto(proyectoCreateDTO, usuario);
+
+        return ResponseEntity.ok(nuevoProyecto);
     }
+
+
+
+
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<ProyectoDTO> obtenerProyecto(@PathVariable Integer id) {
@@ -51,15 +84,22 @@ public class ProyectoController {
     }
 
 
-
+/* Se puede hacer en el actualizar proyecto
     @PutMapping("/{id}/visibilidad")
     public ResponseEntity<ProyectoDTO> cambiarVisibilidad(@PathVariable Integer id, @RequestParam boolean publica) {
         return ResponseEntity.ok(proyectoService.cambiarVisibilidad(id, publica));
     }
 
+ */
+
     @GetMapping("/publicos")
-    public ResponseEntity<List<ProyectoDTO>> buscarPublicos(@RequestParam String nombre) {
-        return ResponseEntity.ok(proyectoService.buscarProyectosPublicos(nombre));
+    public ResponseEntity<List<ProyectoDTO>> buscarPublicos() {
+        return ResponseEntity.ok(proyectoService.buscarProyectosPublicos());
+    }
+
+    @GetMapping("/privados")
+    public ResponseEntity<List<ProyectoDTO>> buscarPrivados() {
+        return ResponseEntity.ok(proyectoService.buscarProyectosPrivados());
     }
 
     @PostMapping("/{id}/colaboradores")

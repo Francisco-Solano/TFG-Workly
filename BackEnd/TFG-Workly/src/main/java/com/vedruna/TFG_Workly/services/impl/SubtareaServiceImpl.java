@@ -1,5 +1,6 @@
 package com.vedruna.TFG_Workly.services.impl;
 
+import com.vedruna.TFG_Workly.dto.CrearSubtareaDTO;
 import com.vedruna.TFG_Workly.dto.SubtareaDTO;
 import com.vedruna.TFG_Workly.models.Subtarea;
 import com.vedruna.TFG_Workly.models.Tarea;
@@ -23,13 +24,13 @@ public class SubtareaServiceImpl implements SubtareaServiceI {
     private ITareaRepository tareaRepository;
 
     @Override
-    public SubtareaDTO crearSubtarea(Integer tareaId, SubtareaDTO subtareaDTO) {
+    public SubtareaDTO crearSubtarea(Integer tareaId, CrearSubtareaDTO subtareaDTO) {
         Tarea tarea = tareaRepository.findById(tareaId)
                 .orElseThrow(() -> new EntityNotFoundException("Tarea no encontrada con ID: " + tareaId));
 
         Subtarea subtarea = new Subtarea();
         subtarea.setTitulo(subtareaDTO.getTitulo());
-        subtarea.setEstado(subtareaDTO.getEstado());
+        subtarea.setEstado("Incompleta");
         subtarea.setTarea(tarea);
 
         Subtarea guardada = subtareaRepository.save(subtarea);
