@@ -1,16 +1,15 @@
 package com.vedruna.TFG_Workly.services;
 
-import com.vedruna.TFG_Workly.dto.ProyectoCreateDTO;
+import com.vedruna.TFG_Workly.dto.CrearProyectoDTO;
 import com.vedruna.TFG_Workly.dto.ProyectoDTO;
 import com.vedruna.TFG_Workly.dto.UsuarioDTO;
-import com.vedruna.TFG_Workly.models.Proyecto;
 import com.vedruna.TFG_Workly.models.Usuario;
 
 import java.util.List;
 
 public interface ProyectoServiceI {
     // Crear nuevo proyecto (solo el usuario autenticado como admin)
-    ProyectoDTO crearProyecto(ProyectoCreateDTO proyectoDTO, Usuario usuario);
+    ProyectoDTO crearProyecto(CrearProyectoDTO proyectoDTO, Usuario usuario);
 
     // Obtener proyecto por ID (si el usuario tiene acceso)
     ProyectoDTO obtenerProyectoPorId(Integer id);
@@ -39,6 +38,8 @@ public interface ProyectoServiceI {
     // Buscar proyectos públicos (para exploración)
     List<ProyectoDTO> buscarProyectosPublicos();
     List<ProyectoDTO> buscarProyectosPrivados();
+    void asignarRol(Integer proyectoId, Integer usuarioId, String nuevoRol);
+
 
 
 }

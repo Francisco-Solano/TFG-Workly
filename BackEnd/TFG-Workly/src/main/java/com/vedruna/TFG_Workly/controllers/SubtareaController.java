@@ -55,6 +55,12 @@ public class SubtareaController {
 
      */
 
+    // Listar todas las subtareas de una tarea
+    @GetMapping("/tarea/{tareaId}")
+    public ResponseEntity<List<SubtareaDTO>> listarSubtareasPorTarea(@PathVariable Integer tareaId) {
+        return ResponseEntity.ok(subtareaService.listarSubtareasPorTarea(tareaId));
+    }
+
     // Eliminar una subtarea
     @DeleteMapping("/{subtareaId}")
     public ResponseEntity<Void> eliminarSubtarea(@PathVariable Integer subtareaId) {
@@ -62,9 +68,4 @@ public class SubtareaController {
         return ResponseEntity.noContent().build();
     }
 
-    // Listar todas las subtareas de una tarea
-    @GetMapping("/tarea/{tareaId}")
-    public ResponseEntity<List<SubtareaDTO>> listarSubtareasPorTarea(@PathVariable Integer tareaId) {
-        return ResponseEntity.ok(subtareaService.listarSubtareasPorTarea(tareaId));
-    }
 }

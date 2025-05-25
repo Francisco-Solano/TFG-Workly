@@ -1,6 +1,6 @@
 package com.vedruna.TFG_Workly.services.impl;
 
-import com.vedruna.TFG_Workly.dto.ProyectoCreateDTO;
+import com.vedruna.TFG_Workly.dto.CrearProyectoDTO;
 import com.vedruna.TFG_Workly.dto.ProyectoDTO;
 import com.vedruna.TFG_Workly.dto.UsuarioDTO;
 //import com.vedruna.TFG_Workly.models.Colaborador;
@@ -40,7 +40,7 @@ public class ProyectoServiceImpl implements ProyectoServiceI {
         this.usuarioRepository = usuarioRepository;
     }
     @Override
-    public ProyectoDTO crearProyecto(ProyectoCreateDTO dto, Usuario usuario) {
+    public ProyectoDTO crearProyecto(CrearProyectoDTO dto, Usuario usuario) {
        usuario = getUsuarioAutenticado(); // o con el código que mencionaste
 
         Proyecto proyecto = new Proyecto();
@@ -171,6 +171,34 @@ public class ProyectoServiceImpl implements ProyectoServiceI {
                 .stream().collect(Collectors.toList());
         return proyectos.stream().map(ProyectoDTO::new).collect(Collectors.toList());
     }
+
+    @Override
+    public void asignarRol(Integer proyectoId, Integer usuarioId, String nuevoRol) {
+        Proyecto proyecto = proyectoRepository.findById(proyectoId)
+                .orElseThrow(() -> new EntityNotFoundException("Proyecto no encontrado con ID: " + proyectoId));
+
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + usuarioId));
+
+        // Verifica si el usuario es colaborador del proyecto
+        Colaborador colaboracion = proyecto.getColaboradores().stream()
+                .filter(c -> c.getUsuario().getUsuarioId().equals(usuarioId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("El usuario no es colaborador del proyecto"));
+
+        // Validar el rol (puedes usar Enum o una lista definida)
+        List<String> rolesValidos = List.of("ROLE_ADMIN", "ROLE_USER");
+        if (!rolesValidos.contains(nuevoRol.toUpperCase())) {
+            throw new IllegalArgumentException("Rol no válido: " + nuevoRol);
+        }
+
+        // Asignar el nuevo rol
+        colaboracion.setRol(nuevoRol.toUpperCase());
+
+        // Guardar cambios en el proyecto
+        proyectoRepository.save(proyecto);
+    }
+
 
 
 }

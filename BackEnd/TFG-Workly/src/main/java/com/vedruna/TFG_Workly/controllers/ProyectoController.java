@@ -1,18 +1,14 @@
 package com.vedruna.TFG_Workly.controllers;
 
-import com.vedruna.TFG_Workly.dto.ProyectoCreateDTO;
+import com.vedruna.TFG_Workly.dto.CrearProyectoDTO;
 import com.vedruna.TFG_Workly.dto.ProyectoDTO;
 import com.vedruna.TFG_Workly.dto.UsuarioDTO;
-import com.vedruna.TFG_Workly.models.Proyecto;
 import com.vedruna.TFG_Workly.models.Usuario;
 import com.vedruna.TFG_Workly.repositories.IUsuarioRepository;
-import com.vedruna.TFG_Workly.security.auth.dto.UserRegisterDTO;
-import com.vedruna.TFG_Workly.security.auth.dto.UsuarioResponseDTO;
 import com.vedruna.TFG_Workly.services.ProyectoServiceI;
 import com.vedruna.TFG_Workly.services.UsuarioServiceI;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
@@ -29,13 +25,14 @@ public class ProyectoController {
     private final ProyectoServiceI proyectoService;
 
     private final UsuarioServiceI usuarioService;
+
     private final IUsuarioRepository usuarioRepository;
 
 
 
     @PostMapping("/crear")
     public ResponseEntity<ProyectoDTO> crearProyecto(
-            @Valid @RequestBody ProyectoCreateDTO proyectoCreateDTO,
+            @Valid @RequestBody CrearProyectoDTO crearProyectoDTO,
             Principal principal) {
         // Obtener email o username del usuario autenticado
         String emailUsuario = principal.getName();
@@ -49,7 +46,7 @@ public class ProyectoController {
 
 
         // Crear proyecto pasando el DTO y el usuario
-        ProyectoDTO nuevoProyecto = proyectoService.crearProyecto(proyectoCreateDTO, usuario);
+        ProyectoDTO nuevoProyecto = proyectoService.crearProyecto(crearProyectoDTO, usuario);
 
         return ResponseEntity.ok(nuevoProyecto);
     }
@@ -84,13 +81,13 @@ public class ProyectoController {
     }
 
 
-/* Se puede hacer en el actualizar proyecto
+
     @PutMapping("/{id}/visibilidad")
     public ResponseEntity<ProyectoDTO> cambiarVisibilidad(@PathVariable Integer id, @RequestParam boolean publica) {
         return ResponseEntity.ok(proyectoService.cambiarVisibilidad(id, publica));
     }
 
- */
+
 
     @GetMapping("/publicos")
     public ResponseEntity<List<ProyectoDTO>> buscarPublicos() {
@@ -125,6 +122,17 @@ public class ProyectoController {
     public ResponseEntity<List<UsuarioDTO>> listarColaboradores(@PathVariable Integer id) {
         return ResponseEntity.ok(proyectoService.listarColaboradores(id));
     }
+
+    @PutMapping("/{proyectoId}/colaboradores/{usuarioId}/rol")
+    public ResponseEntity<Void> asignarRolAColaborador(
+            @PathVariable Integer proyectoId,
+            @PathVariable Integer usuarioId,
+            @RequestParam String nuevoRol
+    ) {
+        proyectoService.asignarRol(proyectoId, usuarioId, nuevoRol);
+        return ResponseEntity.ok().build();
+    }
+
 
 
 }

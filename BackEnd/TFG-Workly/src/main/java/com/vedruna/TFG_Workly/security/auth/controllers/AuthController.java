@@ -1,5 +1,6 @@
 package com.vedruna.TFG_Workly.security.auth.controllers;
 
+import com.vedruna.TFG_Workly.exceptions.RolNotFoundException;
 import com.vedruna.TFG_Workly.models.Rol;
 import com.vedruna.TFG_Workly.models.Usuario;
 import com.vedruna.TFG_Workly.repositories.IRolRepository;
@@ -45,7 +46,8 @@ public class AuthController {
         usuario.setPassword(passwordEncoder.encode(userDTO.password()));
 
         Rol rolUser = rolRepository.findByRolName("ROLE_USER")
-                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+                .orElseThrow(() -> new RolNotFoundException("Rol no encontrado"));
+
         usuario.setUserRol(rolUser);
 
         Usuario savedUser = usuarioRepository.save(usuario);

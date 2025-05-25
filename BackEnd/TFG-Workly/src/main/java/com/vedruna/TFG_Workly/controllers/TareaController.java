@@ -3,6 +3,7 @@ package com.vedruna.TFG_Workly.controllers;
 import com.vedruna.TFG_Workly.dto.CrearTareaDTO;
 import com.vedruna.TFG_Workly.dto.TareaDTO;
 import com.vedruna.TFG_Workly.services.TareaServiceI;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +19,10 @@ public class TareaController {
     private final TareaServiceI tareaService;
 
     @PostMapping("/crear")
-    public ResponseEntity<TareaDTO> crearTarea(@RequestBody CrearTareaDTO crearTareaDTO) {
+    public ResponseEntity<TareaDTO> crearTarea(@Valid @RequestBody CrearTareaDTO crearTareaDTO) {
         return ResponseEntity.ok(tareaService.crearTarea(crearTareaDTO));
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<TareaDTO> obtenerTareaPorId(@PathVariable Integer id) {

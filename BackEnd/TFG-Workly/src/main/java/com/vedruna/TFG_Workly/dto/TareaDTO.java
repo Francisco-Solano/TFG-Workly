@@ -18,6 +18,7 @@ public class TareaDTO {
     private String descripcion;
     private String estado;      // Ej: "Por hacer", "En progreso", "Hecho"
     private String prioridad;   // Ej: "Alta", "Media", "Baja"
+
     private Date fechaLimite;
 
     // Relaciones opcionales (según tu lógica de negocio)
