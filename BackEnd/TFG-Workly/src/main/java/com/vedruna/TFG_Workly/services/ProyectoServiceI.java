@@ -14,6 +14,8 @@ public interface ProyectoServiceI {
     // Obtener proyecto por ID (si el usuario tiene acceso)
     ProyectoDTO obtenerProyectoPorId(Integer id);
 
+    List<ProyectoDTO> obtenerProyectosComoColaborador(Integer usuarioId);
+
     // Actualizar proyecto (nombre, visibilidad, etc.)
     ProyectoDTO actualizarProyecto(Integer id, ProyectoDTO proyectoDTO);
 

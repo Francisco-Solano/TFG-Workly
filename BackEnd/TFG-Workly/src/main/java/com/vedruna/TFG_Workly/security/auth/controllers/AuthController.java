@@ -76,7 +76,7 @@ public class AuthController {
         return new LoginResponse(
                 user.getEmail(),
                 List.of(user.getUserRol().getRolName()), // Lista de roles como string
-                token
+                token, user.getUsuarioId()
         );
     }
 }

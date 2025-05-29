@@ -10,12 +10,14 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UsuarioDTO {
+    private Integer id;
     private String username;
     private String email;
     private String foto;
     private String rol;
 
     public UsuarioDTO(Usuario usuario) {
+        this.id = usuario.getUsuarioId();
         this.username = usuario.getUsername();
         this.email = usuario.getEmail();
         this.foto = usuario.getFoto();

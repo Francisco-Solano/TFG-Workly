@@ -71,6 +71,15 @@ public class ProyectoServiceImpl implements ProyectoServiceI {
     }
 
     @Override
+    public List<ProyectoDTO> obtenerProyectosComoColaborador(Integer usuarioId) {
+        List<Colaborador> colaboraciones = colaboradorRepository.findByUsuario_UsuarioId(usuarioId);
+        return colaboraciones.stream()
+                .map(c -> new ProyectoDTO(c.getProyecto()))
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
     public ProyectoDTO actualizarProyecto(Integer id, ProyectoDTO proyectoDTO) {
         Proyecto proyecto = proyectoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Proyecto no encontrado"));

@@ -15,7 +15,7 @@ const { logout } = useAuth();
 
   return (
     <>
-      <aside className="w-64 bg-white shadow-md flex flex-col rounded-r-lg">
+      <aside className="w-64 bg-white shadow-md flex flex-col rounded-r-lg min-h-screen sticky top-0">
         <div className="p-6 border-b border-gray-200">
           <h1 className="text-3xl font-bold text-gray-700">Workly</h1>
         </div>

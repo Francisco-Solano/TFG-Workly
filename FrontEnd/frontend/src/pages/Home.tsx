@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import CreateProjectModal from '../components/CreateProjectModal';
+import ConfirmDeleteModal from '../components/ConfirmDeleteModal'; // Importamos el nuevo modal
 import { useAuth } from "../context/AuthContext";
+
 
 interface Project {
   id: number;
@@ -13,116 +15,332 @@ interface Project {
 const Home = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
 
   const { user } = useAuth();
   const token = user?.token;
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        console.log("Token usado para obtener proyectos:", token);
+ useEffect(() => {
+    console.log("User en Home:", user);
+  const fetchProjects = async () => {
+    try {
+      if (!token || !user) return;
 
-        const res = await fetch("http://localhost:8080/api/v1/proyectos/mios", { 
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!res.ok) throw new Error("Error al cargar proyectos");
+      // Fetch proyectos propios
+      const resMios = await fetch("http://localhost:8080/api/v1/proyectos/mios", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!resMios.ok) throw new Error("Error al cargar proyectos propios");
+      const dataMios = await resMios.json();
 
-        const data = await res.json();
-        console.log("Proyectos recibidos:", data);
+      // Fetch proyectos compartidos
+      const resCompartidos = await fetch(`http://localhost:8080/api/v1/proyectos/compartidos/${user.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!resCompartidos.ok) throw new Error("Error al cargar proyectos compartidos");
+      const dataCompartidos = await resCompartidos.json();
 
-        // Adaptar la estructura de datos recibidos a la interfaz Project
-        const adapted = data.map((p: any) => ({
-          id: p.proyectoId,
-          title: p.nombre,
-          favorite: false, // o como lo manejes (por defecto false)
-        }));
+      // Adaptar proyectos propios
+      const proyectosMios = dataMios.map((p: any) => ({
+        id: p.proyectoId,
+        title: p.nombre,
+        favorite: false,
+        owner: true,  // marcar que es proyecto propio
+      }));
 
-        setProjects(adapted);
+      // Adaptar proyectos compartidos
+      const proyectosCompartidos = dataCompartidos.map((p: any) => ({
+        id: p.proyectoId,
+        title: p.nombre,
+        favorite: false,
+        owner: false,  // marcar que es compartido
+      }));
 
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    if (token) fetchProjects();
-  }, [token]);
-
-  const handleCreateProject = async (title: string) => {
-  try {
-    console.log("Token usado para crear proyecto:", token);
-
-    const res = await fetch("http://localhost:8080/api/v1/proyectos/crear", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ nombre: title, visibilidad: false }),
-    });
-
-    if (!res.ok) throw new Error("Error al crear proyecto");
-
-    const newProject = await res.json();
-    const adaptedProject = {
-      id: newProject.proyectoId,
-      title: newProject.nombre,
-      favorite: false,
-    };
-
-    setProjects((prev) => [...prev, adaptedProject]);
-    setShowModal(false);
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-
-  const toggleFavorite = (id: number) => {
-    setProjects(projects.map(project =>
-      project.id === id ? { ...project, favorite: !project.favorite } : project
-    ));
+      // Combinar ambos arrays
+      setProjects([...proyectosMios, ...proyectosCompartidos]);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
+  fetchProjects();
+}, [token, user]);
+
+
+  const handleCreateProject = async (title: string) => {
+    try {
+      console.log("Token usado para crear proyecto:", token);
+
+      const res = await fetch("http://localhost:8080/api/v1/proyectos/crear", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ nombre: title, visibilidad: false }),
+      });
+
+      if (!res.ok) throw new Error("Error al crear proyecto");
+
+      const newProject = await res.json();
+      const adaptedProject = {
+        id: newProject.proyectoId,
+        title: newProject.nombre,
+        favorite: false,
+      };
+
+      setProjects((prev) => [...prev, adaptedProject]);
+      setShowModal(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleEditProject = async (id: number, title: string) => {
+    try {
+      const res = await fetch(`http://localhost:8080/api/v1/proyectos/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ nombre: title, visibilidad: true }),
+      });
+
+      if (!res.ok) throw new Error("Error al actualizar proyecto");
+
+      const updatedProject = await res.json();
+
+      setProjects((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, title: updatedProject.nombre } : p))
+      );
+
+      setShowModal(false);
+      setEditingProject(null);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const toggleFavorite = (id: number) => {
+    setProjects(
+      projects.map((project) =>
+        project.id === id ? { ...project, favorite: !project.favorite } : project
+      )
+    );
+  };
+
+  const filteredProjects = projects.filter((project) =>
+    project.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+ // Filtrar proyectos propios y compartidos por separado
+  const proyectosMios = filteredProjects.filter(p => p.owner);
+  const proyectosCompartidos = filteredProjects.filter(p => !p.owner);
+
+  
   return (
-    <div className="flex h-screen bg-gray-100 font-sans">
+    <div className="flex min-h-screen bg-gray-100 font-sans">
       <Sidebar />
-      <div className="flex flex-col flex-1">
-        <Header onNavigateToCreateProject={() => setShowModal(true)} />
+      <div className="flex flex-col flex-1 relative overflow-auto">
+        <Header
+          onNavigateToCreateProject={() => {
+            setEditingProject(null);
+            setShowModal(true);
+          }}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+        />
         <main className="flex-1 p-6">
           <h1 className="text-3xl font-bold text-gray-800 mb-6">Proyectos</h1>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {projects.map(project => (
-              <div
-                key={project.id}  // Ahora sí hay un id único para key
-                className="bg-blue-800 text-white p-6 rounded-lg shadow-md flex justify-between items-center"
-              >
-                <span>{project.title}</span>
-                <button onClick={() => toggleFavorite(project.id)}>
-                  {project.favorite ? (
-                    <svg className="w-5 h-5 fill-current text-white" viewBox="0 0 20 20">
-                      <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 18.343 3.172 11.515a4 4 0 010-5.656z" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.72-7.72 1.06-1.06a5.5 5.5 0 000-7.82z" />
-                    </svg>
-                  )}
-                </button>
-              </div>
-            ))}
-          </div>
+          {/* Sección Proyectos propios */}
+          {proyectosMios.length === 0 ? (
+            <p>No hay proyectos propios que coincidan con "{searchTerm}"</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-10">
+              {proyectosMios.map((project) => (
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  openMenuId={openMenuId}
+                  setOpenMenuId={setOpenMenuId}
+                  setEditingProject={setEditingProject}
+                  setShowModal={setShowModal}
+                  setProjectToDelete={setProjectToDelete}
+                  toggleFavorite={toggleFavorite}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Sección Proyectos compartidos */}
+          <h2 className="text-3xl font-bold text-gray-800 mb-6">Compartidos conmigo</h2>
+          {proyectosCompartidos.length === 0 ? (
+            <p>No hay proyectos compartidos que coincidan con "{searchTerm}"</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {proyectosCompartidos.map((project) => (
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  openMenuId={openMenuId}
+                  setOpenMenuId={setOpenMenuId}
+                  setEditingProject={setEditingProject}
+                  setShowModal={setShowModal}
+                  setProjectToDelete={setProjectToDelete}
+                  toggleFavorite={toggleFavorite}
+                />
+              ))}
+            </div>
+          )}
         </main>
       </div>
 
+      {/* Modales igual */}
       {showModal && (
         <CreateProjectModal
-          onClose={() => setShowModal(false)}
-          onCreate={(title) => handleCreateProject(title)}
+          onClose={() => {
+            setShowModal(false);
+            setEditingProject(null);
+          }}
+          onCreate={(title, id) => {
+            if (id) {
+              handleEditProject(id, title);
+            } else {
+              handleCreateProject(title);
+            }
+          }}
+          editingProject={editingProject}
         />
       )}
+
+      {projectToDelete && (
+        <ConfirmDeleteModal
+          projectTitle={projectToDelete.title}
+          onCancel={() => setProjectToDelete(null)}
+          onConfirm={async () => {
+            try {
+              const res = await fetch(`http://localhost:8080/api/v1/proyectos/${projectToDelete.id}`, {
+                method: "DELETE",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              });
+              if (!res.ok) throw new Error("Error al eliminar proyecto");
+
+              setProjects((prev) => prev.filter((p) => p.id !== projectToDelete.id));
+              setProjectToDelete(null);
+            } catch (err) {
+              console.error(err);
+              alert("Error al eliminar el proyecto. Intenta de nuevo.");
+              setProjectToDelete(null);
+            }
+          }}
+        />
+      )}
+    </div>
+  );
+};
+
+// Componente auxiliar para no repetir código en las cards
+import { useNavigate } from 'react-router-dom';
+
+const ProjectCard = ({
+  project,
+  openMenuId,
+  setOpenMenuId,
+  setEditingProject,
+  setShowModal,
+  setProjectToDelete,
+  toggleFavorite,
+}: {
+  project: Project & { owner: boolean };
+  openMenuId: number | null;
+  setOpenMenuId: React.Dispatch<React.SetStateAction<number | null>>;
+  setEditingProject: React.Dispatch<React.SetStateAction<Project | null>>;
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setProjectToDelete: React.Dispatch<React.SetStateAction<Project | null>>;
+  toggleFavorite: (id: number) => void;
+}) => {
+  const navigate = useNavigate();
+
+  return (
+    <div
+      onClick={() => navigate(`/proyecto/${project.id}`)}
+      className="bg-blue-800 text-white px-4 py-6 rounded-xl shadow-md flex flex-col justify-between items-start aspect-[4/2] min-h-[100px] relative group hover:shadow-lg transition-shadow duration-300"
+    >
+      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="relative">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpenMenuId(project.id === openMenuId ? null : project.id);
+            }}
+            className="text-white hover:text-gray-300 focus:outline-none"
+          >
+            &#8942;
+          </button>
+
+          {openMenuId === project.id && (
+            <div className="absolute right-0 mt-2 w-32 bg-white text-black rounded shadow-md z-10">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setEditingProject(project);
+                  setShowModal(true);
+                  setOpenMenuId(null);
+                }}
+                className="w-full text-left px-4 py-2 hover:bg-gray-100"
+              >
+                Editar
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setOpenMenuId(null);
+                  setProjectToDelete(project);
+                }}
+                className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
+              >
+                Eliminar
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <span className="text-lg font-semibold">{project.title}</span>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          toggleFavorite(project.id);
+        }}
+      >
+        {project.favorite ? (
+          <svg className="w-5 h-5 fill-current text-white" viewBox="0 0 20 20">
+            <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 18.343 3.172 11.515a4 4 0 010-5.656z" />
+          </svg>
+        ) : (
+          <svg
+            className="w-5 h-5 text-white"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            viewBox="0 0 24 24"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.72-7.72 1.06-1.06a5.5 5.5 0 000-7.82z" />
+          </svg>
+        )}
+      </button>
     </div>
   );
 };

@@ -15,6 +15,7 @@ public interface IColaboradorRepository extends JpaRepository<Colaborador,Intege
     Optional<Colaborador> findByProyecto_ProyectoIdAndUsuario_UsuarioId(Integer proyectoId, Integer usuarioId);
 
     Boolean existsByProyecto_ProyectoIdAndProyecto_Usuario_UsuarioId(Integer proyectoId, Integer usuarioId);
+    List<Colaborador> findByUsuario_UsuarioId(Integer usuarioId);
 
 
 }

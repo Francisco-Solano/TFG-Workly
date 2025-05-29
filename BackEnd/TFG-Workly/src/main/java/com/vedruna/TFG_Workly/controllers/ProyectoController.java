@@ -3,7 +3,9 @@ package com.vedruna.TFG_Workly.controllers;
 import com.vedruna.TFG_Workly.dto.CrearProyectoDTO;
 import com.vedruna.TFG_Workly.dto.ProyectoDTO;
 import com.vedruna.TFG_Workly.dto.UsuarioDTO;
+import com.vedruna.TFG_Workly.models.Colaborador;
 import com.vedruna.TFG_Workly.models.Usuario;
+import com.vedruna.TFG_Workly.repositories.IColaboradorRepository;
 import com.vedruna.TFG_Workly.repositories.IUsuarioRepository;
 import com.vedruna.TFG_Workly.services.ProyectoServiceI;
 import com.vedruna.TFG_Workly.services.UsuarioServiceI;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/proyectos")
@@ -28,6 +31,14 @@ public class ProyectoController {
 
     private final IUsuarioRepository usuarioRepository;
 
+    private final IColaboradorRepository colaboradorRepository;
+
+
+
+    @GetMapping("/compartidos/{usuarioId}")
+    public ResponseEntity<List<ProyectoDTO>> obtenerProyectosCompartidos(@PathVariable Integer usuarioId) {
+        return ResponseEntity.ok(proyectoService.obtenerProyectosComoColaborador(usuarioId));
+    }
 
 
     @PostMapping("/crear")
