@@ -18,7 +18,7 @@ const Home = () => {
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
-  const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [editingProject, setEditingProject] = useState<Project | undefined>(undefined);
 const [projectToDelete, setProjectToDelete] = useState<Project | undefined>(undefined);
 
   const { user } = useAuth();
@@ -126,7 +126,7 @@ const [projectToDelete, setProjectToDelete] = useState<Project | undefined>(unde
       );
 
       setShowModal(false);
-      setEditingProject(null);
+      setEditingProject(undefined);
     } catch (err) {
       console.error(err);
     }
@@ -154,7 +154,7 @@ const [projectToDelete, setProjectToDelete] = useState<Project | undefined>(unde
       <div className="flex flex-col flex-1 relative overflow-auto">
         <Header
           onNavigateToCreateProject={() => {
-            setEditingProject(null);
+            setEditingProject(undefined);
             setShowModal(true);
           }}
           searchTerm={searchTerm}
@@ -211,7 +211,7 @@ const [projectToDelete, setProjectToDelete] = useState<Project | undefined>(unde
         <CreateProjectModal
           onClose={() => {
             setShowModal(false);
-            setEditingProject(null);
+            setEditingProject(undefined);
           }}
           onCreate={(title, id) => {
             if (id) {
@@ -227,7 +227,7 @@ const [projectToDelete, setProjectToDelete] = useState<Project | undefined>(unde
       {projectToDelete && (
         <ConfirmDeleteModal
           projectTitle={projectToDelete.title}
-          onCancel={() => setProjectToDelete(null)}
+          onCancel={() => setProjectToDelete(undefined)}
           onConfirm={async () => {
             try {
               const res = await fetch(`http://localhost:8080/api/v1/proyectos/${projectToDelete.id}`, {
@@ -239,11 +239,11 @@ const [projectToDelete, setProjectToDelete] = useState<Project | undefined>(unde
               if (!res.ok) throw new Error("Error al eliminar proyecto");
 
               setProjects((prev) => prev.filter((p) => p.id !== projectToDelete.id));
-              setProjectToDelete(null);
+              setProjectToDelete(undefined);
             } catch (err) {
               console.error(err);
               alert("Error al eliminar el proyecto. Intenta de nuevo.");
-              setProjectToDelete(null);
+              setProjectToDelete(undefined);
             }
           }}
         />
@@ -267,9 +267,9 @@ const ProjectCard = ({
   project: Project;
   openMenuId: number | null;
   setOpenMenuId: React.Dispatch<React.SetStateAction<number | null>>;
-  setEditingProject: React.Dispatch<React.SetStateAction<Project | null>>;
+  setEditingProject: React.Dispatch<React.SetStateAction<Project | undefined>>;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  setProjectToDelete: React.Dispatch<React.SetStateAction<Project | null>>;
+  setProjectToDelete: React.Dispatch<React.SetStateAction<Project | undefined>>;
   toggleFavorite: (id: number) => void;
 }) => {
   const navigate = useNavigate();
