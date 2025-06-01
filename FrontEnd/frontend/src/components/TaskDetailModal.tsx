@@ -24,7 +24,7 @@ interface TaskDetailModalProps {
     completed?: boolean;
     assignedUserId?: number;
     assignedUserEmail?: string;
-    members?: string[];
+   // members?: string[];
     subtasks?: Subtask[];
   };
   collaborators: Collaborator[];
@@ -43,7 +43,7 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
   const [description, setDescription] = useState(task.description || '');
   const [isCompleted, setIsCompleted] = useState(task.completed || false);
   const [dueDate, setDueDate] = useState(task.dueDate || '');
-  const [members, setMembers] = useState(task.members || []);
+  //const [members, setMembers] = useState(task.members || []);
   const [subtasks, setSubtasks] = useState<Subtask[]>(task.subtasks || []);
   const [status, setStatus] = useState<string>(
     task.completed
@@ -144,7 +144,7 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
         completed: newCompleted,
         assignedUserId: full.asignado?.id ?? undefined,
         assignedUserEmail: full.asignado?.email ?? undefined,
-        members: full.miembros || [],
+     //   members: full.miembros || [],
         subtasks: forcedSubtasks,
       });
     } catch (err) {
@@ -453,7 +453,7 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
           completed: s.estado === 'Completada',
           assignee: undefined,
         })) || [],
-        members: task.members,
+     //   members: task.members,
       };
 
       onUpdateTask(updatedTask);
