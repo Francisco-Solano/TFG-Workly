@@ -26,7 +26,6 @@ interface Props {
 
 const CardColumn: React.FC<Props> = ({
   card,
-  index,
   draggingTask,
   onCardDragStart,
   onCardDragEnd,

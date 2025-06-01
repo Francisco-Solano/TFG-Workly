@@ -10,6 +10,7 @@ interface Project {
   id: number;
   title: string;
   favorite: boolean;
+  owner: boolean;
 }
 
 const Home = () => {
@@ -263,7 +264,7 @@ const ProjectCard = ({
   setProjectToDelete,
   toggleFavorite,
 }: {
-  project: Project & { owner: boolean };
+  project: Project;
   openMenuId: number | null;
   setOpenMenuId: React.Dispatch<React.SetStateAction<number | null>>;
   setEditingProject: React.Dispatch<React.SetStateAction<Project | null>>;
