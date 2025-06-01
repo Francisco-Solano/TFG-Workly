@@ -58,7 +58,7 @@ interface ProjectDetailProps {
   onBack: () => void;
 }
 
-const Projects: React.FC<ProjectDetailProps> = ({ projectId, onBack }) => {
+const Projects: React.FC<ProjectDetailProps> = ({ projectId }) => {
   const { user } = useAuth();
   const token = user?.token;
 
@@ -244,7 +244,7 @@ const handleTaskDrop = async (
         description: tarea.descripcion || '',
         dueDate: tarea.fechaLimite || '',
         completed: tarea.estado === 'Completada',
-        members: tarea.miembros || [],
+      //  members: tarea.miembros || [],
     //    labels: tarea.etiquetas?.map((e: any) => e.nombre) || [],
         subtasks: tarea.subtareas || [],
       };
@@ -521,7 +521,7 @@ const handleOpenTaskModal = async (task: Task) => {
             description:       ta.descripcion || '',
             dueDate:           isoToDateInput(ta.fechaLimite),
             completed:         ta.estado === 'Completada',
-            members:           ta.miembros || [],
+        //    members:           ta.miembros || [],
             assignedUserId:    ta.asignado?.id ?? undefined,
             assignedUserEmail: ta.asignado?.email ?? undefined,
             // labels:         ta.etiquetas?.map((e: any) => e.nombre) || [],

@@ -35,7 +35,6 @@ interface TaskDetailModalProps {
 
 const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
   task,
-  collaborators,
   onClose,
   onUpdateTask,
   onDeleteTask,
@@ -53,7 +52,7 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
       ? 'Pendiente'
       : 'Por hacer'
   );
-  const [assignedUserId, setAssignedUserId] = useState<number | "">(task.assignedUserId ?? "");
+ // const [assignedUserId, setAssignedUserId] = useState<number | "">(task.assignedUserId ?? "");
 
   const token = (() => {
     const raw = localStorage.getItem('user');
@@ -235,19 +234,7 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     onUpdateTask({ ...task, dueDate: e.target.value });
   };
 
-  const handleAddMember = (member: string) => {
-    if (member.trim() && !members.includes(member.trim())) {
-      const updated = [...members, member.trim()];
-      setMembers(updated);
-      onUpdateTask({ ...task, members: updated });
-    }
-  };
-
-  const handleRemoveMember = (m: string) => {
-    const updated = members.filter(member => member !== m);
-    setMembers(updated);
-    onUpdateTask({ ...task, members: updated });
-  };
+  
 
   const handleDeleteTask = () => {
     if (
@@ -279,7 +266,7 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
   }
 };
 
-
+/*
   const updateTaskCompletionOnServer = async (newCompleted: boolean) => {
   if (!token) {
     console.error('Token no encontrado');
@@ -370,7 +357,7 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     }
   }
 };
-
+*/
   const handleAddSubtask = async () => {
     const nuevoTitulo = prompt('Título de la nueva subtarea:');
     if (!nuevoTitulo?.trim()) return;

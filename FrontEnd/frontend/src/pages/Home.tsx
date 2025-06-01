@@ -19,7 +19,7 @@ const Home = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
-  const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
+const [projectToDelete, setProjectToDelete] = useState<Project | undefined>(undefined);
 
   const { user } = useAuth();
   const token = user?.token;
