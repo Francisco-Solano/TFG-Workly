@@ -1,5 +1,5 @@
 package com.vedruna.TFG_Workly.repositories;
-
+/*
 import com.vedruna.TFG_Workly.models.Etiqueta;
 import com.vedruna.TFG_Workly.models.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,4 +14,6 @@ public interface IEtiquetaRepository extends JpaRepository<Etiqueta,Integer> {
 
 }
 
+
+ */
 

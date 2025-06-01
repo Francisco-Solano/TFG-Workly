@@ -26,7 +26,7 @@ public class CrearTareaDTO {
     private Date fechaLimite;
     @NotNull(message = "El ID de la tabla es obligatorio")
     private Integer tablaId;
-    private List<Integer> etiquetaIds;
+   // private List<Integer> etiquetaIds;
     //TODO  poner a que tabla pertenece la tarea
 }
 

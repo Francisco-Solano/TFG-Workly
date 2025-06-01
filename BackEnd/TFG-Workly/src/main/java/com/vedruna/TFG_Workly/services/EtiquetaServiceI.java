@@ -1,5 +1,5 @@
 package com.vedruna.TFG_Workly.services;
-
+/*
 import com.vedruna.TFG_Workly.dto.CrearEtiquetaDTO;
 import com.vedruna.TFG_Workly.dto.EtiquetaDTO;
 
@@ -27,5 +27,7 @@ public interface EtiquetaServiceI {
     // Quitar una etiqueta de una tarea
     void quitarEtiquetaDeTarea(Integer etiquetaId, Integer tareaId);
 }
+
+ */
 
 

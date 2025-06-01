@@ -1,5 +1,5 @@
 package com.vedruna.TFG_Workly.services.impl;
-
+/*
 import com.vedruna.TFG_Workly.dto.*;
 import com.vedruna.TFG_Workly.models.Etiqueta;
 import com.vedruna.TFG_Workly.models.Tabla;
@@ -109,3 +109,5 @@ public class EtiquetaServiceImpl implements EtiquetaServiceI {
 }
 
 
+
+ */

@@ -29,10 +29,10 @@ public class TareaServiceImpl implements TareaServiceI {
 
     @Autowired
     ITareaRepository tareaRepository;
-
+/*
     @Autowired
     IEtiquetaRepository etiquetaRepository;
-
+*/
 
 
     @Autowired
@@ -63,13 +63,13 @@ public class TareaServiceImpl implements TareaServiceI {
         tarea.setPrioridad(crearTareaDTO.getPrioridad());
         tarea.setFechaLimite(crearTareaDTO.getFechaLimite());
         tarea.setTabla(tabla);
-
+/*
         // Asignar etiquetas si las hay
         if (crearTareaDTO.getEtiquetaIds() != null && !crearTareaDTO.getEtiquetaIds().isEmpty()) {
             List<Etiqueta> etiquetas = etiquetaRepository.findAllById(crearTareaDTO.getEtiquetaIds());
             tarea.setEtiquetas((Set<Etiqueta>) etiquetas);
         }
-
+*/
         // Guardar tarea
         Tarea tareaGuardada = tareaRepository.save(tarea);
 
@@ -119,11 +119,13 @@ public class TareaServiceImpl implements TareaServiceI {
                     .orElseThrow(() -> new RuntimeException("Tabla no encontrada con ID: " + tareaDTO.getTablaId()));
             tareaExistente.setTabla(nuevaTabla);
         }
-
+/*
         if (tareaDTO.getEtiquetaIds() != null) {
             List<Etiqueta> etiquetas = etiquetaRepository.findAllById(tareaDTO.getEtiquetaIds());
             tareaExistente.setEtiquetas((Set<Etiqueta>) etiquetas);
         }
+
+ */
 
         // Guardar cambios
         tareaRepository.save(tareaExistente);
@@ -154,6 +156,15 @@ public class TareaServiceImpl implements TareaServiceI {
         tareaRepository.save(tarea);
     }
 
+    @Override
+    public void actualizarPosicionTarea(Integer tareaId, Integer nuevaPosicion) {
+        Tarea tarea = tareaRepository.findById(tareaId)
+                .orElseThrow(() -> new EntityNotFoundException("Tarea no encontrada con ID: " + tareaId));
+        tarea.setPosicion(nuevaPosicion);
+        tareaRepository.save(tarea);
+    }
+
+
 
     @Override
     public void cambiarEstado(Integer tareaId, String nuevoEstado) {
@@ -172,7 +183,7 @@ public class TareaServiceImpl implements TareaServiceI {
         tareaRepository.save(tarea);
 
     }
-
+/*
     @Override
     @Transactional
     public void añadirEtiqueta(Integer tareaId, Integer etiquetaId) {
@@ -208,7 +219,7 @@ public class TareaServiceImpl implements TareaServiceI {
             tareaRepository.save(tarea);
         }   }
 
-
+*/
 
 
     @Override

@@ -41,6 +41,9 @@ public class Tarea {
     @Column(name = "fecha_limite")
     private Date fechaLimite;
 
+    @Column(name = "posicion")
+    private Integer posicion;
+
     @ManyToOne
     @JoinColumn(name = "tabla_id", nullable = false)
     private Tabla tabla;
@@ -59,6 +62,7 @@ public class Tarea {
 
 
 
+/*
     @ManyToMany
     @JoinTable(
             name = "tarea_etiqueta",  // Cambiado para evitar conflicto
@@ -69,6 +73,8 @@ public class Tarea {
 
    private Set<Etiqueta> etiquetas = new HashSet<>();
 
+
+ */
 
 }
 

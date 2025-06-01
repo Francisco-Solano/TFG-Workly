@@ -38,24 +38,30 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .cors() // <-- ESTO HABILITA CORS USANDO TU CorsConfig
+        http
+                .csrf().disable()
+                .cors()
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        http.authorizeHttpRequests()
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // <-- PERMITE preflight requests
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeHttpRequests()
+                // 1) Preflight (OPTIONS) para todo
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                // 2) Login / Registro
                 .requestMatchers("/auth/**").permitAll()
+                // 3) PERMITIR GET /api/v1/usuarios/email/{email} SIN ROL
+                .requestMatchers(HttpMethod.GET, "/api/v1/usuarios/email/**").permitAll()
+                // 4) Cualquier otro /api/v1/usuarios/** exige ROLE_USER
                 .requestMatchers("/api/v1/usuarios/**").hasRole("USER")
+                // 5) /api/v1/proyectos/** exige ROLE_USER
                 .requestMatchers("/api/v1/proyectos/**").hasRole("USER")
-                .anyRequest()
-                .authenticated();
-
+                // 6) El resto, autenticado
+                .anyRequest().authenticated()
+        ;
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
-
 
 
 

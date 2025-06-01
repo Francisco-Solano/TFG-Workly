@@ -26,7 +26,7 @@ public class TareaDTO {
 
     private List<ComentarioDTO> comentarios;
 
-    private List<EtiquetaDTO> etiquetas;
+   // private List<EtiquetaDTO> etiquetas;
 
     private List<ArchivoDTO> archivos;
 
@@ -47,10 +47,12 @@ public class TareaDTO {
 
         this.comentarios = tarea.getComentarios() != null ?
                 tarea.getComentarios().stream().map(ComentarioDTO::new).collect(Collectors.toList()) : null;
-
+/*
         this.etiquetas = tarea.getEtiquetas() != null ?
                 tarea.getEtiquetas().stream().map(EtiquetaDTO::new).collect(Collectors.toList()) : null;
 
+
+ */
         this.archivos = tarea.getArchivos() != null ?
                 tarea.getArchivos().stream().map(ArchivoDTO::new).collect(Collectors.toList()) : null;
 

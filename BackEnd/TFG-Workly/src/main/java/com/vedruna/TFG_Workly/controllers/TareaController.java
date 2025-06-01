@@ -45,6 +45,15 @@ public class TareaController {
         tareaService.moverTarea(id, tablaId);
         return ResponseEntity.ok().build();
     }
+
+    @PatchMapping("/{id}/posicion")
+    public ResponseEntity<Void> actualizarPosicionTarea(
+            @PathVariable Integer id,
+            @RequestParam Integer posicion) {
+        tareaService.actualizarPosicionTarea(id, posicion);
+        return ResponseEntity.ok().build();
+    }
+
 /*Se puede hacer en actualizar tarea
     @PostMapping("/{id}/estado")
     public ResponseEntity<Void> cambiarEstado(@PathVariable Integer id, @RequestParam String estado) {
@@ -62,7 +71,7 @@ public class TareaController {
     }
 
      */
-
+/*
     @PostMapping("/{id}/etiquetas/{etiquetaId}")
     public ResponseEntity<Void> añadirEtiqueta(@PathVariable Integer id, @PathVariable Integer etiquetaId) {
         tareaService.añadirEtiqueta(id, etiquetaId);
@@ -75,6 +84,8 @@ public class TareaController {
         return ResponseEntity.ok().build();
     }
 
+
+ */
     @PostMapping("/{id}/asignar/{usuarioId}")
     public ResponseEntity<Void> asignarUsuario(@PathVariable Integer id, @PathVariable Integer usuarioId) {
         tareaService.asignarUsuario(id, usuarioId);

@@ -75,33 +75,35 @@ const Home = () => {
 
 
   const handleCreateProject = async (title: string) => {
-    try {
-      console.log("Token usado para crear proyecto:", token);
+  try {
+    console.log("Token usado para crear proyecto:", token);
 
-      const res = await fetch("http://localhost:8080/api/v1/proyectos/crear", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ nombre: title, visibilidad: false }),
-      });
+    const res = await fetch("http://localhost:8080/api/v1/proyectos/crear", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ nombre: title, visibilidad: false }),
+    });
 
-      if (!res.ok) throw new Error("Error al crear proyecto");
+    if (!res.ok) throw new Error("Error al crear proyecto");
 
-      const newProject = await res.json();
-      const adaptedProject = {
-        id: newProject.proyectoId,
-        title: newProject.nombre,
-        favorite: false,
-      };
+    const newProject = await res.json();
+    const adaptedProject = {
+      id: newProject.proyectoId,
+      title: newProject.nombre,
+      favorite: false,
+      owner: true,   // ← marcamos owner=true para que vaya a "Mis proyectos"
+    };
 
-      setProjects((prev) => [...prev, adaptedProject]);
-      setShowModal(false);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+    setProjects((prev) => [...prev, adaptedProject]);
+    setShowModal(false);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 
   const handleEditProject = async (id: number, title: string) => {
     try {

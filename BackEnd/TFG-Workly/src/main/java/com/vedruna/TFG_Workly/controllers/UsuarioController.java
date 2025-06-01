@@ -4,6 +4,7 @@ import com.vedruna.TFG_Workly.dto.AsignacionDTO;
 import com.vedruna.TFG_Workly.dto.ProyectoDTO;
 import com.vedruna.TFG_Workly.dto.TareaDTO;
 import com.vedruna.TFG_Workly.dto.UsuarioDTO;
+import com.vedruna.TFG_Workly.repositories.IUsuarioRepository;
 import com.vedruna.TFG_Workly.services.UsuarioServiceI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,8 @@ import java.util.List;
 public class UsuarioController {
 
     private final UsuarioServiceI usuarioService;
+    private final IUsuarioRepository userRepository;
+
 
     @GetMapping("/perfil")
     public ResponseEntity<UsuarioDTO> obtenerPerfil() {
@@ -42,7 +45,12 @@ public class UsuarioController {
     public ResponseEntity<List<UsuarioDTO>> buscarPorEmail(@RequestParam String email) {
         return ResponseEntity.ok(usuarioService.buscarPorEmail(email));
     }
-
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UsuarioDTO> buscarPorEmailPath(@PathVariable String email) {
+        return userRepository.findByEmail(email)
+                .map(u -> ResponseEntity.ok(new UsuarioDTO(u)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
     @GetMapping("/proyectos")
     public ResponseEntity<List<ProyectoDTO>> obtenerProyectosDelUsuario() {
         return ResponseEntity.ok(usuarioService.obtenerProyectosDelUsuario());

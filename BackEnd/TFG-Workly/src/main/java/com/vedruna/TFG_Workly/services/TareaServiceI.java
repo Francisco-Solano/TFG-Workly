@@ -23,6 +23,8 @@ public interface TareaServiceI {
     // Mover tarea a otra tabla (drag and drop)
     void moverTarea(Integer tareaId, Integer nuevaTablaId);
 
+    void actualizarPosicionTarea(Integer tareaId, Integer nuevaPosicion);
+
     // Cambiar estado de la tarea (por ejemplo: "Pendiente", "En progreso", "Hecho")
     void cambiarEstado(Integer tareaId, String nuevoEstado);
 
@@ -30,10 +32,10 @@ public interface TareaServiceI {
     void cambiarPrioridad(Integer tareaId, String nuevaPrioridad);
 
     // Añadir una etiqueta a una tarea
-    void añadirEtiqueta(Integer tareaId, Integer etiquetaId);
+   // void añadirEtiqueta(Integer tareaId, Integer etiquetaId);
 
     // Quitar una etiqueta de una tarea
-    void quitarEtiqueta(Integer tareaId, Integer etiquetaId);
+   // void quitarEtiqueta(Integer tareaId, Integer etiquetaId);
 
     // Asignar usuario a la tarea
     void asignarUsuario(Integer tareaId, Integer usuarioId);

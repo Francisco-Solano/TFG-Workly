@@ -1,5 +1,5 @@
 package com.vedruna.TFG_Workly.dto;
-
+/*
 import com.vedruna.TFG_Workly.models.Etiqueta;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,5 +26,7 @@ public class EtiquetaDTO {
                 .collect(Collectors.toList());
     }
 }
+
+ */
 
 

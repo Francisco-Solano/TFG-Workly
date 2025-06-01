@@ -26,16 +26,7 @@ const { logout } = useAuth();
                 Proyectos
               </a>
             </li>
-            <li className="mb-2">
-              <a href="#" className="block py-2 px-6 text-gray-700 hover:bg-gray-100 rounded-r-md transition-colors duration-200">
-                Calendario
-              </a>
-            </li>
-            <li className="mb-2">
-              <a href="#" className="block py-2 px-6 text-gray-700 hover:bg-gray-100 rounded-r-md transition-colors duration-200">
-                Destacados
-              </a>
-            </li>
+            
           </ul>
         </nav>
         <div className="p-6 border-t border-gray-200">
