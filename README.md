@@ -103,9 +103,43 @@
 
 Puedes consultar la documentación técnica, diagramas y casos de prueba en:
 
-🔗 [Documentación Workly (Starlight)](https://tudocumentacion.starlight.dev)
+🔗 [Documentación Workly (Starlight)]([https://tudocumentacion.starlight.dev](https://github.com/Francisco-Solano/DocumentacionWorkly))
 
 ---
+---
+
+## 🛠️ Para instalar la documentacion
+
+### 📦 Pasos
+
+1. Clona el repositorio:
+   ```bash
+   git clone https://github.com/Francisco-Solano/DocumentacionWorkly.git
+   ```
+
+2. Ejecuta el sigiiente comando en la terminal del editor:
+   ```bash
+   npm install
+   ```
+
+3. Lanza el frontend y entra al enlace que devuelve:
+   ```bash
+   npm run dev
+   ```
+---
+
+## 🚀 Guía de uso
+
+1. Regístrate como nuevo usuario.
+2. Crea un proyecto desde tu panel.
+3. Añade columnas (tablas) al proyecto.
+4. Añade tareas y subtareas dentro de cada tabla.
+5. Invita a colaboradores por correo.
+6. Cambia el estado de las tareas, muévelas y edítalas cuando lo necesites.
+
+---
+
+
 
 ## 🎨 Enlace a la interfaz en Figma
 
