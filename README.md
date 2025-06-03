@@ -114,7 +114,7 @@ Puedes consultar la documentación técnica, diagramas y casos de prueba en:
 
 1. Clona el repositorio:
    ```bash
-   git clone https://github.com/Francisco-Solano/DocumentacionWorkly.git
+   git clone https://github.com/Francisco-Solano/Documentacion-TFG-Workly.git
    ```
 
 2. Ejecuta el sigiiente comando en la terminal del editor:
