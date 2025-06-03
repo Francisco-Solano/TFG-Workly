@@ -28,29 +28,13 @@ public interface TareaServiceI {
     // Cambiar estado de la tarea (por ejemplo: "Pendiente", "En progreso", "Hecho")
     void cambiarEstado(Integer tareaId, String nuevoEstado);
 
-    // Cambiar prioridad
-    void cambiarPrioridad(Integer tareaId, String nuevaPrioridad);
-
-    // Añadir una etiqueta a una tarea
-   // void añadirEtiqueta(Integer tareaId, Integer etiquetaId);
-
-    // Quitar una etiqueta de una tarea
-   // void quitarEtiqueta(Integer tareaId, Integer etiquetaId);
-
-    // Asignar usuario a la tarea
-    void asignarUsuario(Integer tareaId, Integer usuarioId);
-
-    // Desasignar usuario de la tarea
-   void desasignarUsuario(Integer tareaId, Integer usuarioId);
-
     // Establecer o actualizar fecha límite
     void actualizarFechaLimite(Integer tareaId, Date nuevaFechaLimite);
 
     // Listar tareas de una tabla específica
     List<TareaDTO> listarTareasPorTabla(Integer tablaId);
 
-    // Listar tareas asignadas al usuario autenticado
-    List<TareaDTO> listarTareasAsignadasAlUsuario();
+
 }
 
 

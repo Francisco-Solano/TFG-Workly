@@ -1,10 +1,7 @@
 package com.vedruna.TFG_Workly.services;
 
-import com.vedruna.TFG_Workly.dto.AsignacionDTO;
 import com.vedruna.TFG_Workly.dto.ProyectoDTO;
-import com.vedruna.TFG_Workly.dto.TareaDTO;
 import com.vedruna.TFG_Workly.dto.UsuarioDTO;
-import com.vedruna.TFG_Workly.models.Usuario;
 
 import java.util.List;
 
@@ -27,7 +24,5 @@ public interface UsuarioServiceI {
     // Listar todos los proyectos en los que el usuario participa (propios + colaboraciones)
     List<ProyectoDTO> obtenerProyectosDelUsuario();
 
-    // Listar todas las tareas asignadas a este usuario
-    List<AsignacionDTO> obtenerTareasAsignadas();
 
 }

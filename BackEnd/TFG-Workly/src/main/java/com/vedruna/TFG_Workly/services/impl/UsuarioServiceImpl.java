@@ -1,14 +1,9 @@
 package com.vedruna.TFG_Workly.services.impl;
 
-import com.vedruna.TFG_Workly.dto.AsignacionDTO;
 import com.vedruna.TFG_Workly.dto.ProyectoDTO;
-import com.vedruna.TFG_Workly.dto.TareaDTO;
 import com.vedruna.TFG_Workly.dto.UsuarioDTO;
-import com.vedruna.TFG_Workly.models.Asignacion;
 import com.vedruna.TFG_Workly.models.Proyecto;
-import com.vedruna.TFG_Workly.models.Tarea;
 import com.vedruna.TFG_Workly.models.Usuario;
-import com.vedruna.TFG_Workly.repositories.IAsignacionRepository;
 import com.vedruna.TFG_Workly.repositories.IProyectoRepository;
 import com.vedruna.TFG_Workly.repositories.ITareaRepository;
 import com.vedruna.TFG_Workly.repositories.IUsuarioRepository;
@@ -35,8 +30,7 @@ public class UsuarioServiceImpl implements UsuarioServiceI {
     @Autowired
     ITareaRepository tareaRepository;
 
-    @Autowired
-    IAsignacionRepository asignacionRepository;
+
 
 
 
@@ -116,22 +110,6 @@ public class UsuarioServiceImpl implements UsuarioServiceI {
                 .collect(Collectors.toList());
     }
 
-
-    @Override
-    public List<AsignacionDTO> obtenerTareasAsignadas() {
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
-
-        Usuario usuario = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
-
-        List<Asignacion> tareasAsignadas = asignacionRepository.findByUsuario_UsuarioId(usuario.getUsuarioId());
-
-        return tareasAsignadas.stream()
-                .map(AsignacionDTO::new)
-                .collect(Collectors.toList());
-    }
 
 
 

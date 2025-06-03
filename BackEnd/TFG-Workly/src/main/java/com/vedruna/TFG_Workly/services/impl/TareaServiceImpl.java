@@ -29,17 +29,13 @@ public class TareaServiceImpl implements TareaServiceI {
 
     @Autowired
     ITareaRepository tareaRepository;
-/*
-    @Autowired
-    IEtiquetaRepository etiquetaRepository;
-*/
+
 
 
     @Autowired
     IUsuarioRepository usuarioRepository;
 
-    @Autowired
-    private IAsignacionRepository asignacionRepository;
+
 
 
 
@@ -63,13 +59,7 @@ public class TareaServiceImpl implements TareaServiceI {
         tarea.setPrioridad(crearTareaDTO.getPrioridad());
         tarea.setFechaLimite(crearTareaDTO.getFechaLimite());
         tarea.setTabla(tabla);
-/*
-        // Asignar etiquetas si las hay
-        if (crearTareaDTO.getEtiquetaIds() != null && !crearTareaDTO.getEtiquetaIds().isEmpty()) {
-            List<Etiqueta> etiquetas = etiquetaRepository.findAllById(crearTareaDTO.getEtiquetaIds());
-            tarea.setEtiquetas((Set<Etiqueta>) etiquetas);
-        }
-*/
+
         // Guardar tarea
         Tarea tareaGuardada = tareaRepository.save(tarea);
 
@@ -119,13 +109,7 @@ public class TareaServiceImpl implements TareaServiceI {
                     .orElseThrow(() -> new RuntimeException("Tabla no encontrada con ID: " + tareaDTO.getTablaId()));
             tareaExistente.setTabla(nuevaTabla);
         }
-/*
-        if (tareaDTO.getEtiquetaIds() != null) {
-            List<Etiqueta> etiquetas = etiquetaRepository.findAllById(tareaDTO.getEtiquetaIds());
-            tareaExistente.setEtiquetas((Set<Etiqueta>) etiquetas);
-        }
 
- */
 
         // Guardar cambios
         tareaRepository.save(tareaExistente);
@@ -175,84 +159,7 @@ public class TareaServiceImpl implements TareaServiceI {
 
     }
 
-    @Override
-    public void cambiarPrioridad(Integer tareaId, String nuevaPrioridad) {
-        Tarea tarea = tareaRepository.findById(tareaId)
-                .orElseThrow(() -> new EntityNotFoundException("Tarea no encontrada con ID: " + tareaId));
-        tarea.setPrioridad(nuevaPrioridad);
-        tareaRepository.save(tarea);
 
-    }
-/*
-    @Override
-    @Transactional
-    public void añadirEtiqueta(Integer tareaId, Integer etiquetaId) {
-        Tarea tarea = tareaRepository.findById(tareaId)
-                .orElseThrow(() -> new EntityNotFoundException("Tarea no encontrada con ID: " + tareaId));
-
-        Etiqueta etiqueta = etiquetaRepository.findById(etiquetaId)
-                .orElseThrow(() -> new EntityNotFoundException("Etiqueta no encontrada con ID: " + etiquetaId));
-
-        // Inicializar lista si es null
-        if (tarea.getEtiquetas() == null) {
-            tarea.setEtiquetas((Set<Etiqueta>) etiqueta);
-        }
-
-        // Evitar etiquetas duplicadas
-        if (!tarea.getEtiquetas().contains(etiqueta)) {
-            tarea.getEtiquetas().add(etiqueta);
-            tareaRepository.save(tarea);
-        }
-    }
-
-
-    @Override
-    public void quitarEtiqueta(Integer tareaId, Integer etiquetaId) {
-        Tarea tarea = tareaRepository.findById(tareaId)
-                .orElseThrow(() -> new EntityNotFoundException("Tarea no encontrada con ID: " + tareaId));
-
-        Etiqueta etiqueta = etiquetaRepository.findById(etiquetaId)
-                .orElseThrow(() -> new EntityNotFoundException("Etiqueta no encontrada con ID: " + etiquetaId));
-
-        if (tarea.getEtiquetas().contains(etiqueta)) {
-            tarea.getEtiquetas().remove(etiqueta);
-            tareaRepository.save(tarea);
-        }   }
-
-*/
-
-
-    @Override
-    public void asignarUsuario(Integer tareaId, Integer usuarioId) {
-        boolean yaAsignado = asignacionRepository.existsByTarea_TareaIdAndUsuario_UsuarioId(tareaId, usuarioId);
-        if (yaAsignado) {
-            return; // O lanzar una excepción si lo prefieres
-        }
-
-        Tarea tarea = tareaRepository.findById(tareaId)
-                .orElseThrow(() -> new EntityNotFoundException("Tarea no encontrada con ID: " + tareaId));
-
-        Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + usuarioId));
-
-        Asignacion asignacion = new Asignacion();
-        asignacion.setTarea(tarea);
-        asignacion.setUsuario(usuario);
-
-        asignacionRepository.save(asignacion);
-    }
-
-
-    @Override
-    public void desasignarUsuario(Integer tareaId, Integer usuarioId) {
-        List<Asignacion> asignaciones = asignacionRepository.findByTarea_TareaId(tareaId);
-        for (Asignacion asignacion : asignaciones) {
-            if (asignacion.getUsuario().getUsuarioId().equals(usuarioId)) {
-                asignacionRepository.delete(asignacion);
-                break;
-            }
-        }
-    }
 
 
 
@@ -275,23 +182,6 @@ public class TareaServiceImpl implements TareaServiceI {
     }
 
 
-    @Override
-    public List<TareaDTO> listarTareasAsignadasAlUsuario() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
-
-        Usuario usuario = usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con email: " + email));
-
-        List<Asignacion> asignaciones = asignacionRepository.findByUsuario_UsuarioId(usuario.getUsuarioId());
-
-        List<TareaDTO> tareasDTO = new ArrayList<>();
-        for (Asignacion asignacion : asignaciones) {
-            tareasDTO.add(new TareaDTO(asignacion.getTarea()));
-        }
-
-        return tareasDTO;
-    }
 
 
 

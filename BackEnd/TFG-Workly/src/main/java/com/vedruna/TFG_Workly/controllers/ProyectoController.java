@@ -93,22 +93,7 @@ public class ProyectoController {
 
 
 
-    @PutMapping("/{id}/visibilidad")
-    public ResponseEntity<ProyectoDTO> cambiarVisibilidad(@PathVariable Integer id, @RequestParam boolean publica) {
-        return ResponseEntity.ok(proyectoService.cambiarVisibilidad(id, publica));
-    }
 
-
-
-    @GetMapping("/publicos")
-    public ResponseEntity<List<ProyectoDTO>> buscarPublicos() {
-        return ResponseEntity.ok(proyectoService.buscarProyectosPublicos());
-    }
-
-    @GetMapping("/privados")
-    public ResponseEntity<List<ProyectoDTO>> buscarPrivados() {
-        return ResponseEntity.ok(proyectoService.buscarProyectosPrivados());
-    }
 
     @PostMapping("/{id}/colaboradores")
     public ResponseEntity<Void> añadirColaborador(
@@ -134,15 +119,7 @@ public class ProyectoController {
         return ResponseEntity.ok(proyectoService.listarColaboradores(id));
     }
 
-    @PutMapping("/{proyectoId}/colaboradores/{usuarioId}/rol")
-    public ResponseEntity<Void> asignarRolAColaborador(
-            @PathVariable Integer proyectoId,
-            @PathVariable Integer usuarioId,
-            @RequestParam String nuevoRol
-    ) {
-        proyectoService.asignarRol(proyectoId, usuarioId, nuevoRol);
-        return ResponseEntity.ok().build();
-    }
+
 
 
 

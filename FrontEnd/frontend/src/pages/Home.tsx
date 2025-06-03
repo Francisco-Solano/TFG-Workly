@@ -1,10 +1,11 @@
+// src/pages/Home.tsx
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import CreateProjectModal from '../components/CreateProjectModal';
-import ConfirmDeleteModal from '../components/ConfirmDeleteModal'; // Importamos el nuevo modal
+import ConfirmDeleteModal from '../components/ConfirmDeleteModal';
 import { useAuth } from "../context/AuthContext";
-
+import { useNavigate } from 'react-router-dom';
 
 interface Project {
   id: number;
@@ -19,112 +20,89 @@ const Home = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
   const [editingProject, setEditingProject] = useState<Project | undefined>(undefined);
-const [projectToDelete, setProjectToDelete] = useState<Project | undefined>(undefined);
+  const [projectToDelete, setProjectToDelete] = useState<Project | undefined>(undefined);
 
   const { user } = useAuth();
   const token = user?.token;
+  const navigate = useNavigate();
 
- useEffect(() => {
-    console.log("User en Home:", user);
-  const fetchProjects = async () => {
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        if (!token || !user) return;
+
+        const resMios = await fetch("http://localhost:8080/api/v1/proyectos/mios", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!resMios.ok) throw new Error("Error al cargar proyectos propios");
+        const dataMios = await resMios.json();
+
+        const resCompartidos = await fetch(
+          `http://localhost:8080/api/v1/proyectos/compartidos/${user.id}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        if (!resCompartidos.ok) throw new Error("Error al cargar proyectos compartidos");
+        const dataCompartidos = await resCompartidos.json();
+
+        const proyectosMios = dataMios.map((p: any) => ({
+          id: p.proyectoId,
+          title: p.nombre,
+          favorite: false,
+          owner: true,
+        }));
+
+        const proyectosCompartidos = dataCompartidos.map((p: any) => ({
+          id: p.proyectoId,
+          title: p.nombre,
+          favorite: false,
+          owner: false,
+        }));
+
+        setProjects([...proyectosMios, ...proyectosCompartidos]);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchProjects();
+  }, [token, user]);
+
+  const handleCreateProject = async (title: string) => {
     try {
-      if (!token || !user) return;
-
-      // Fetch proyectos propios
-      const resMios = await fetch("http://localhost:8080/api/v1/proyectos/mios", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      if (!token) return;
+      const res = await fetch("http://localhost:8080/api/v1/proyectos/crear", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ nombre: title, visibilidad: false }),
       });
-      if (!resMios.ok) throw new Error("Error al cargar proyectos propios");
-      const dataMios = await resMios.json();
-
-      // Fetch proyectos compartidos
-      const resCompartidos = await fetch(`http://localhost:8080/api/v1/proyectos/compartidos/${user.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!resCompartidos.ok) throw new Error("Error al cargar proyectos compartidos");
-      const dataCompartidos = await resCompartidos.json();
-
-      // Adaptar proyectos propios
-      const proyectosMios = dataMios.map((p: any) => ({
-        id: p.proyectoId,
-        title: p.nombre,
+      if (!res.ok) throw new Error("Error al crear proyecto");
+      const newProject = await res.json();
+      const adaptedProject = {
+        id: newProject.proyectoId,
+        title: newProject.nombre,
         favorite: false,
-        owner: true,  // marcar que es proyecto propio
-      }));
-
-      // Adaptar proyectos compartidos
-      const proyectosCompartidos = dataCompartidos.map((p: any) => ({
-        id: p.proyectoId,
-        title: p.nombre,
-        favorite: false,
-        owner: false,  // marcar que es compartido
-      }));
-
-      // Combinar ambos arrays
-      setProjects([...proyectosMios, ...proyectosCompartidos]);
+        owner: true,
+      };
+      setProjects((prev) => [...prev, adaptedProject]);
+      setShowModal(false);
     } catch (err) {
       console.error(err);
     }
   };
 
-  fetchProjects();
-}, [token, user]);
-
-
-  const handleCreateProject = async (title: string) => {
-  try {
-    console.log("Token usado para crear proyecto:", token);
-
-    const res = await fetch("http://localhost:8080/api/v1/proyectos/crear", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ nombre: title, visibilidad: false }),
-    });
-
-    if (!res.ok) throw new Error("Error al crear proyecto");
-
-    const newProject = await res.json();
-    const adaptedProject = {
-      id: newProject.proyectoId,
-      title: newProject.nombre,
-      favorite: false,
-      owner: true,   // ← marcamos owner=true para que vaya a "Mis proyectos"
-    };
-
-    setProjects((prev) => [...prev, adaptedProject]);
-    setShowModal(false);
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-
   const handleEditProject = async (id: number, title: string) => {
     try {
+      if (!token) return;
       const res = await fetch(`http://localhost:8080/api/v1/proyectos/${id}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ nombre: title, visibilidad: true }),
       });
-
       if (!res.ok) throw new Error("Error al actualizar proyecto");
-
       const updatedProject = await res.json();
-
       setProjects((prev) =>
         prev.map((p) => (p.id === id ? { ...p, title: updatedProject.nombre } : p))
       );
-
       setShowModal(false);
       setEditingProject(undefined);
     } catch (err) {
@@ -143,27 +121,31 @@ const [projectToDelete, setProjectToDelete] = useState<Project | undefined>(unde
   const filteredProjects = projects.filter((project) =>
     project.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
- // Filtrar proyectos propios y compartidos por separado
-  const proyectosMios = filteredProjects.filter(p => p.owner);
-  const proyectosCompartidos = filteredProjects.filter(p => !p.owner);
+  const proyectosMios = filteredProjects.filter((p) => p.owner);
+  const proyectosCompartidos = filteredProjects.filter((p) => !p.owner);
 
-  
   return (
     <div className="flex min-h-screen bg-gray-100 font-sans">
+      {/* Sidebar colapsable coloca fuera mobile */}
       <Sidebar />
+
+      {/* Contenedor principal */}
       <div className="flex flex-col flex-1 relative overflow-auto">
-        <Header
-          onNavigateToCreateProject={() => {
-            setEditingProject(undefined);
-            setShowModal(true);
-          }}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-        />
+        {/* Header con espacio left en móvil para evitar solapamiento */}
+        <div className="pl-12 md:pl-0">
+          <Header
+            onNavigateToCreateProject={() => {
+              setEditingProject(undefined);
+              setShowModal(true);
+            }}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+          />
+        </div>
+
         <main className="flex-1 p-6">
           <h1 className="text-3xl font-bold text-gray-800 mb-6">Proyectos</h1>
 
-          {/* Sección Proyectos propios */}
           {proyectosMios.length === 0 ? (
             <p>No hay proyectos propios que coincidan con "{searchTerm}"</p>
           ) : (
@@ -183,7 +165,6 @@ const [projectToDelete, setProjectToDelete] = useState<Project | undefined>(unde
             </div>
           )}
 
-          {/* Sección Proyectos compartidos */}
           <h2 className="text-3xl font-bold text-gray-800 mb-6">Compartidos conmigo</h2>
           {proyectosCompartidos.length === 0 ? (
             <p>No hay proyectos compartidos que coincidan con "{searchTerm}"</p>
@@ -206,7 +187,6 @@ const [projectToDelete, setProjectToDelete] = useState<Project | undefined>(unde
         </main>
       </div>
 
-      {/* Modales igual */}
       {showModal && (
         <CreateProjectModal
           onClose={() => {
@@ -230,14 +210,12 @@ const [projectToDelete, setProjectToDelete] = useState<Project | undefined>(unde
           onCancel={() => setProjectToDelete(undefined)}
           onConfirm={async () => {
             try {
+              if (!token) return;
               const res = await fetch(`http://localhost:8080/api/v1/proyectos/${projectToDelete.id}`, {
                 method: "DELETE",
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
+                headers: { Authorization: `Bearer ${token}` },
               });
-              if (!res.ok) throw new Error("Error al eliminar proyecto");
-
+              if (!res.ok) throw new Error("Error al eliminar el proyecto");
               setProjects((prev) => prev.filter((p) => p.id !== projectToDelete.id));
               setProjectToDelete(undefined);
             } catch (err) {
@@ -252,8 +230,15 @@ const [projectToDelete, setProjectToDelete] = useState<Project | undefined>(unde
   );
 };
 
-// Componente auxiliar para no repetir código en las cards
-import { useNavigate } from 'react-router-dom';
+interface ProjectCardProps {
+  project: Project;
+  openMenuId: number | null;
+  setOpenMenuId: React.Dispatch<React.SetStateAction<number | null>>;
+  setEditingProject: React.Dispatch<React.SetStateAction<Project | undefined>>;
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setProjectToDelete: React.Dispatch<React.SetStateAction<Project | undefined>>;
+  toggleFavorite: (id: number) => void;
+}
 
 const ProjectCard = ({
   project,
@@ -263,15 +248,7 @@ const ProjectCard = ({
   setShowModal,
   setProjectToDelete,
   toggleFavorite,
-}: {
-  project: Project;
-  openMenuId: number | null;
-  setOpenMenuId: React.Dispatch<React.SetStateAction<number | null>>;
-  setEditingProject: React.Dispatch<React.SetStateAction<Project | undefined>>;
-  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  setProjectToDelete: React.Dispatch<React.SetStateAction<Project | undefined>>;
-  toggleFavorite: (id: number) => void;
-}) => {
+}: ProjectCardProps) => {
   const navigate = useNavigate();
 
   return (

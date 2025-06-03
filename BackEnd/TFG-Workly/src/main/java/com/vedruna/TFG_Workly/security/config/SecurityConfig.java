@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 public class SecurityConfig {
 
@@ -39,29 +41,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(withDefaults()) // <-- IMPORTANTE: activa CORS y usa tu CorsConfig
                 .csrf().disable()
-                .cors()
-                .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
-                // 1) Preflight (OPTIONS) para todo
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                // 2) Login / Registro
                 .requestMatchers("/auth/**").permitAll()
-                // 3) PERMITIR GET /api/v1/usuarios/email/{email} SIN ROL
                 .requestMatchers(HttpMethod.GET, "/api/v1/usuarios/email/**").permitAll()
-                // 4) Cualquier otro /api/v1/usuarios/** exige ROLE_USER
                 .requestMatchers("/api/v1/usuarios/**").hasRole("USER")
-                // 5) /api/v1/proyectos/** exige ROLE_USER
                 .requestMatchers("/api/v1/proyectos/**").hasRole("USER")
-                // 6) El resto, autenticado
-                .anyRequest().authenticated()
-        ;
+                .anyRequest().authenticated();
+
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
 
 
 

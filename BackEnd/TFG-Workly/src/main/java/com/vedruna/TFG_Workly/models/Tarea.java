@@ -51,30 +51,9 @@ public class Tarea {
     @OneToMany(mappedBy = "tarea", cascade = CascadeType.ALL)
     private List<Subtarea> subtareas;
 
-    @OneToMany(mappedBy = "tarea", cascade = CascadeType.ALL)
-    private List<Comentario> comentarios;
-
-    @OneToMany(mappedBy = "tarea", cascade = CascadeType.ALL)
-    private List<Archivo> archivos;
-
-    @OneToMany(mappedBy = "tarea", cascade = CascadeType.ALL)
-    private List<Asignacion> asignaciones;
 
 
 
-/*
-    @ManyToMany
-    @JoinTable(
-            name = "tarea_etiqueta",  // Cambiado para evitar conflicto
-            joinColumns = @JoinColumn(name = "tarea_id"),
-            inverseJoinColumns = @JoinColumn(name = "etiqueta_id")
-    )
-
-
-   private Set<Etiqueta> etiquetas = new HashSet<>();
-
-
- */
 
 }
 

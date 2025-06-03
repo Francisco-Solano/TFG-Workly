@@ -1,78 +1,36 @@
+// src/components/CardColumn.tsx
 import React, { useState } from 'react';
-import { Card, Task } from '../types/kanban';
+import { useDroppable, useDraggable } from '@dnd-kit/core';
 import TaskItem from './TaskItem';
+import { Card as CardType, Task as TaskType } from '../types/kanban';
 
 interface Props {
-  card: Card;
-  index: number;
-  draggingTask: { taskId: number; fromCardId: number } | null;
-  onCardDragStart: () => void;
-  onCardDragEnd: () => void;
-  onCardDrop: () => void;
-  onTaskDragStart: (taskId: number, fromCardId: number) => void;
-  onTaskDragEnd: () => void;
-  onTaskDrop: (
-    toCardId: number,
-    toIndex: number | null,
-    taskId: number,
-    fromCardId: number
-  ) => void;
-  onReorderTasks: (cardId: number, newTasksOrder: Task[]) => void;
+  card: CardType;
   onAddTask: (cardId: number, title: string) => void;
-  onTaskClick: (task: Task) => void;
+  onTaskClick: (task: TaskType) => void;
   onUpdateCardTitle: (cardId: number, title: string) => void;
   onDeleteCard: (cardId: number) => void;
 }
 
-const CardColumn: React.FC<Props> = ({
+export default function CardColumn({
   card,
-  draggingTask,
-  onCardDragStart,
-  onCardDragEnd,
-  onCardDrop,
-  onTaskDragStart,
-  onTaskDragEnd,
-  onTaskDrop,
-  onReorderTasks,
   onAddTask,
   onTaskClick,
   onUpdateCardTitle,
   onDeleteCard,
-}) => {
+}: Props) {
   const [showTaskInput, setShowTaskInput] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [editingTitle, setEditingTitle] = useState(false);
   const [tempTitle, setTempTitle] = useState(card.title);
-  const [draggedTaskIndex, setDraggedTaskIndex] = useState<number | null>(null);
   const [showOptions, setShowOptions] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const reorderTasks = (list: Task[], from: number, to: number): Task[] => {
-    const result = [...list];
-    const [moved] = result.splice(from, 1);
-    result.splice(to, 0, moved);
-    return result;
-  };
-
-  const handleInternalDrop = (toIndex: number | null) => {
-    if (draggedTaskIndex !== null) {
-      const newOrder = reorderTasks(
-        card.tasks,
-        draggedTaskIndex,
-        toIndex ?? card.tasks.length
-      );
-      onReorderTasks(card.id, newOrder);
-      setDraggedTaskIndex(null);
-      onTaskDragEnd();
-    } else if (draggingTask) {
-      onTaskDrop(
-        card.id,
-        toIndex,
-        draggingTask.taskId,
-        draggingTask.fromCardId
-      );
-    }
-  };
+  // 1️⃣ Configuramos este contenedor como “droppable” para recibir tareas
+  const { setNodeRef: setDroppableRef, isOver } = useDroppable({
+    id: String(card.id),
+    data: { type: 'taskContainer' }, // marca que este droppable es contenedor de tareas
+  });
 
   const handleAdd = () => {
     if (!newTaskTitle.trim()) return;
@@ -83,34 +41,22 @@ const CardColumn: React.FC<Props> = ({
 
   return (
     <div
-      className="relative w-[320px] bg-gray-100 rounded-xl shadow-md p-4"
-      draggable={draggingTask === null}
+      ref={setDroppableRef}
+      className={`relative w-[320px] bg-gray-100 rounded-xl shadow-md p-4 transition ${
+        isOver ? 'bg-blue-50' : ''
+      }`}
       onMouseEnter={() => setShowOptions(true)}
       onMouseLeave={() => {
         setShowOptions(false);
         setEditingTitle(false);
         setTempTitle(card.title);
       }}
-      onDragStart={e => {
-        e.stopPropagation();
-        onCardDragStart();
-      }}
-      onDragOver={e => {
-        e.preventDefault();
-      }}
-      onDrop={e => {
-        e.stopPropagation();
-        onCardDrop();
-      }}
-      onDragEnd={e => {
-        e.stopPropagation();
-        onCardDragEnd();
-      }}
     >
+      {/* ─── Botón “⋮” para editar/ eliminar columna ─── */}
       {showOptions && (
         <div className="absolute top-2 right-2 z-20">
           <button
-            onClick={() => setShowDropdown(prev => !prev)}
+            onClick={() => setShowDropdown((prev) => !prev)}
             className="text-gray-500 hover:text-gray-700 text-xl"
           >
             ⋮
@@ -137,13 +83,14 @@ const CardColumn: React.FC<Props> = ({
         </div>
       )}
 
+      {/* ─── Título de la columna (editable) ─── */}
       <div className="flex justify-between items-center mb-4">
         {editingTitle ? (
           <div className="flex items-center gap-2 w-full">
             <input
               className="border px-2 py-1 rounded flex-1"
               value={tempTitle}
-              onChange={e => setTempTitle(e.target.value)}
+              onChange={(e) => setTempTitle(e.target.value)}
             />
             <button
               onClick={() => {
@@ -165,53 +112,26 @@ const CardColumn: React.FC<Props> = ({
         )}
       </div>
 
+      {/* ─── Lista de tareas (cada una es “DraggableTask”) ─── */}
       <div className="space-y-2 mb-4">
-        {card.tasks
-        .filter(Boolean) 
-        .map((task, idx) => (
-          
-          <div
+        {card.tasks.map((task) => (
+          <DraggableTask
             key={task.id}
-            draggable
-            onDragStart={e => {
-              e.stopPropagation();
-              onTaskDragStart(task.id, card.id);
-              setDraggedTaskIndex(idx);
-            }}
-            onDragOver={e => {
-              e.preventDefault();
-              e.stopPropagation();
-            }}
-            onDrop={e => {
-              e.stopPropagation();
-              handleInternalDrop(idx);
-            }}
-            onDragEnd={e => {
-              e.stopPropagation();
-              setDraggedTaskIndex(null);
-              onTaskDragEnd();
-            }}
-            className="cursor-grab"
+            task={task}
+            cardId={card.id}
             onClick={() => onTaskClick(task)}
-          >
-            <TaskItem task={task} />
-          </div>
+          />
         ))}
-
-        <div
-          onDragOver={e => e.preventDefault()}
-          onDrop={() => handleInternalDrop(null)}
-          className="h-10"
-        />
       </div>
 
+      {/* ─── Botón “+ Añadir tarea” ─── */}
       {showTaskInput ? (
         <div className="flex flex-col space-y-2">
           <input
             className="border px-2 py-1 rounded"
             value={newTaskTitle}
-            onChange={e => setNewTaskTitle(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && handleAdd()}
+            onChange={(e) => setNewTaskTitle(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
           />
           <button onClick={handleAdd} className="py-1 bg-blue-600 text-white rounded">
             Añadir
@@ -227,6 +147,47 @@ const CardColumn: React.FC<Props> = ({
       )}
     </div>
   );
-};
+}
 
-export default CardColumn;
+// Componente auxiliar para cada “task” – es un “draggable”
+interface DraggableTaskProps {
+  task: TaskType;
+  cardId: number;
+  onClick: () => void;
+}
+
+function DraggableTask({ task, cardId, onClick }: DraggableTaskProps) {
+  // 2️⃣ Configuramos este elemento como “draggable”
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    isDragging,
+  } = useDraggable({
+    id: String(task.id),
+    data: { type: 'task', fromCol: cardId }, // guardamos en data la columna origen
+  });
+
+  const style: React.CSSProperties = {
+    transform: transform
+      ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
+      : undefined,
+    boxShadow: isDragging ? '0 2px 8px rgba(0,0,0,0.2)' : undefined,
+    backgroundColor: isDragging ? 'white' : undefined,
+    cursor: 'grab',
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+      onClick={onClick}
+      style={style}
+      className="rounded bg-white p-2 border"
+    >
+      <TaskItem task={task} />
+    </div>
+  );
+}

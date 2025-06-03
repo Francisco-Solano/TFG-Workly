@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "./context/AuthContext"; // ✅ importa el contexto
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
@@ -16,23 +17,23 @@ const ProjectWrapper = () => {
 };
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        {/* Redirige "/" a "/login" */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
+  const { user } = useAuth(); // ✅ accede al usuario autenticado
 
+  return (
+    <BrowserRouter basename="/TFG-Workly">
+      <Routes>
+        {/* Redirige "/" según estado de autenticación */}
+        <Route
+          path="/"
+          element={
+            user ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />
+          }
+        />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/home" element={<Home />} />
-
-        {/* Ruta para lista general de proyectos (opcional) */}
         <Route path="/projects" element={<Home />} />
-
-        {/* Ruta para detalle de proyecto con parámetro */}
         <Route path="/proyecto/:id" element={<ProjectWrapper />} />
-
-        {/* Ruta catch-all para cualquier otra no definida */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>

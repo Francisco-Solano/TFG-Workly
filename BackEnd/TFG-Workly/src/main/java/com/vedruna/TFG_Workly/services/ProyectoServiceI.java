@@ -34,13 +34,7 @@ public interface ProyectoServiceI {
     // Listar colaboradores de un proyecto (admin y miembros)
     List<UsuarioDTO> listarColaboradores(Integer proyectoId);
 
-    // Cambiar visibilidad (público o privado)
-    ProyectoDTO cambiarVisibilidad(Integer proyectoId, boolean nuevaVisibilidad);
 
-    // Buscar proyectos públicos (para exploración)
-    List<ProyectoDTO> buscarProyectosPublicos();
-    List<ProyectoDTO> buscarProyectosPrivados();
-    void asignarRol(Integer proyectoId, Integer usuarioId, String nuevoRol);
 
 
 

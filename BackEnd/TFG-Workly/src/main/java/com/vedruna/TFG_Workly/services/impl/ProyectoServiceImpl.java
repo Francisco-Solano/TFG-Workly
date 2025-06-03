@@ -158,55 +158,6 @@ public class ProyectoServiceImpl implements ProyectoServiceI {
     }
 
 
-    @Override
-    public ProyectoDTO cambiarVisibilidad(Integer proyectoId, boolean nuevaVisibilidad) {
-        Proyecto proyecto = proyectoRepository.findById(proyectoId)
-                .orElseThrow(() -> new EntityNotFoundException("Proyecto no encontrado"));
-        proyecto.setVisibilidad(nuevaVisibilidad);
-        Proyecto actualizado = proyectoRepository.save(proyecto);
-        return new ProyectoDTO(actualizado);
-    }
-
-  @Override
-    public List<ProyectoDTO> buscarProyectosPublicos() {
-        List<Proyecto> proyectos = proyectoRepository.findByVisibilidad(true)
-                .stream().collect(Collectors.toList());
-        return proyectos.stream().map(ProyectoDTO::new).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ProyectoDTO> buscarProyectosPrivados() {
-        List<Proyecto> proyectos = proyectoRepository.findByVisibilidad(false)
-                .stream().collect(Collectors.toList());
-        return proyectos.stream().map(ProyectoDTO::new).collect(Collectors.toList());
-    }
-
-    @Override
-    public void asignarRol(Integer proyectoId, Integer usuarioId, String nuevoRol) {
-        Proyecto proyecto = proyectoRepository.findById(proyectoId)
-                .orElseThrow(() -> new EntityNotFoundException("Proyecto no encontrado con ID: " + proyectoId));
-
-        Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + usuarioId));
-
-        // Verifica si el usuario es colaborador del proyecto
-        Colaborador colaboracion = proyecto.getColaboradores().stream()
-                .filter(c -> c.getUsuario().getUsuarioId().equals(usuarioId))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("El usuario no es colaborador del proyecto"));
-
-        // Validar el rol (puedes usar Enum o una lista definida)
-        List<String> rolesValidos = List.of("ROLE_ADMIN", "ROLE_USER");
-        if (!rolesValidos.contains(nuevoRol.toUpperCase())) {
-            throw new IllegalArgumentException("Rol no válido: " + nuevoRol);
-        }
-
-        // Asignar el nuevo rol
-        colaboracion.setRol(nuevoRol.toUpperCase());
-
-        // Guardar cambios en el proyecto
-        proyectoRepository.save(proyecto);
-    }
 
 
 

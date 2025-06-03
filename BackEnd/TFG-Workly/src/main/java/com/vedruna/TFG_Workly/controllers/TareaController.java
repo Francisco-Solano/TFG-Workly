@@ -54,50 +54,6 @@ public class TareaController {
         return ResponseEntity.ok().build();
     }
 
-/*Se puede hacer en actualizar tarea
-    @PostMapping("/{id}/estado")
-    public ResponseEntity<Void> cambiarEstado(@PathVariable Integer id, @RequestParam String estado) {
-        tareaService.cambiarEstado(id, estado);
-        return ResponseEntity.ok().build();
-    }
-
- */
-
-    /* Se puede hacer en actualizar tarea
-    @PostMapping("/{id}/prioridad")
-    public ResponseEntity<Void> cambiarPrioridad(@PathVariable Integer id, @RequestParam String prioridad) {
-        tareaService.cambiarPrioridad(id, prioridad);
-        return ResponseEntity.ok().build();
-    }
-
-     */
-/*
-    @PostMapping("/{id}/etiquetas/{etiquetaId}")
-    public ResponseEntity<Void> añadirEtiqueta(@PathVariable Integer id, @PathVariable Integer etiquetaId) {
-        tareaService.añadirEtiqueta(id, etiquetaId);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{id}/etiquetas/{etiquetaId}")
-    public ResponseEntity<Void> quitarEtiqueta(@PathVariable Integer id, @PathVariable Integer etiquetaId) {
-        tareaService.quitarEtiqueta(id, etiquetaId);
-        return ResponseEntity.ok().build();
-    }
-
-
- */
-    @PostMapping("/{id}/asignar/{usuarioId}")
-    public ResponseEntity<Void> asignarUsuario(@PathVariable Integer id, @PathVariable Integer usuarioId) {
-        tareaService.asignarUsuario(id, usuarioId);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{id}/desasignar/{usuarioId}")
-    public ResponseEntity<Void> desasignarUsuario(@PathVariable Integer id, @PathVariable Integer usuarioId) {
-        tareaService.desasignarUsuario(id, usuarioId);
-        return ResponseEntity.ok().build();
-    }
-
     @PostMapping("/{id}/fechaLimite")
     public ResponseEntity<Void> actualizarFechaLimite(@PathVariable Integer id, @RequestParam Date fechaLimite) {
         tareaService.actualizarFechaLimite(id, fechaLimite);
@@ -109,9 +65,5 @@ public class TareaController {
         return ResponseEntity.ok(tareaService.listarTareasPorTabla(tablaId));
     }
 
-    @GetMapping("/asignadas")
-    public ResponseEntity<List<TareaDTO>> listarTareasAsignadasAlUsuario() {
-        return ResponseEntity.ok(tareaService.listarTareasAsignadasAlUsuario());
-    }
 }
 

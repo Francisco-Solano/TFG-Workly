@@ -249,7 +249,6 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
 
   const handleDeleteSubtask = async (subtaskId: number) => {
   if (!token) return alert('Token no encontrado');
-  if (!window.confirm('¿Eliminar esta subtarea?')) return;
   try {
     const res = await fetch(`http://localhost:8080/api/v1/subtareas/${subtaskId}`, {
       method: 'DELETE',
