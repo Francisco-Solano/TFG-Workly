@@ -56,6 +56,9 @@ jobs:
       - name: Verificar archivos descargados
         run: |
           ls -la
+          
+      - name: List all files after downloading artifact
+        run: find . -type f
 
       - name: Iniciar sesión en Azure
         uses: azure/login@v2
