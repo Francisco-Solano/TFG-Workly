@@ -47,7 +47,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: java-app
-          path: .
+          path: .                           # Descarga el contenido de “java-app/” aquí
+
+      - name: Move JAR to root
+        run: mv java-app/TFG-Workly-0.0.1-SNAPSHOT.jar .   # Lo coloca en “./TFG-Workly-0.0.1-SNAPSHOT.jar”
 
       - name: Login to Azure
         uses: azure/login@v2
