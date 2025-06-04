@@ -15,18 +15,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Java version
+      - name: Configurar Java
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'microsoft'
 
-      - name: Build with Maven
+      - name: Construir con Maven
         run: |
           cd BackEnd/TFG-Workly
           mvn clean install
 
-      - name: Upload artifact for deployment job
+      - name: Verificar archivos generados
+        run: |
+          ls -la BackEnd/TFG-Workly/target
+
+      - name: Cargar artefacto para despliegue
         uses: actions/upload-artifact@v4
         with:
           name: java-app
@@ -43,24 +47,27 @@ jobs:
       contents: read
 
     steps:
-      - name: Download artifact from build job
+      - name: Descargar artefacto desde la etapa de construcción
         uses: actions/download-artifact@v4
         with:
           name: java-app
-          path: .                           # Descarga el contenido de “java-app/” aquí
+          path: .
 
-      
-      - name: Login to Azure
+      - name: Verificar archivos descargados
+        run: |
+          ls -la
+
+      - name: Iniciar sesión en Azure
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_D868760BD4B4469390579A74BEED0360 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_82587778108A47CCB6122B44987551B9 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_351C1E4781F74575899F110EA4B97F46 }}
 
-      - name: Deploy to Azure Web App
+      - name: Desplegar a Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'Workly'
           slot-name: 'Production'
-          package: 'java-app/TFG-Workly-0.0.1-SNAPSHOT.jar'
+          package: 'TFG-Workly-0.0.1-SNAPSHOT.jar'
