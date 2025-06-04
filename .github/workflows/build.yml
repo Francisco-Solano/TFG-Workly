@@ -42,8 +42,8 @@ jobs:
 
       - name: Build and test Backend
         run: |
-          cd BackEnd
-          mvn clean test -Dspring.profiles.active=github -Dspring.datasource.url=jdbc:mysql://localhost:3306/workly_db -Dspring.datasource.username=${{ secrets.DB_USER }} -Dspring.datasource.password=${{ secrets.DB_PASSWORD }}
+          cd BackEnd/TFG-Workly
+          mvn clean install -Dspring.profiles.active=github -Dspring.datasource.url=jdbc:mysql://localhost:3306/workly_db -Dspring.datasource.username=${{ secrets.DB_USER }} -Dspring.datasource.password=${{ secrets.DB_PASSWORD }}
 
       - name: Set up Node.js and Install dependencies for Frontend
         uses: actions/setup-node@v3
