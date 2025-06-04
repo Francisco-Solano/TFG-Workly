@@ -1,0 +1,3 @@
+com\vedruna\TFG_Workly\security\auth\controllers\AuthControllerTest.class
+com\vedruna\TFG_Workly\security\config\SecurityConfigTest.class
+com\vedruna\TFG_Workly\security\auth\TfgWorklyApplicationTests.class
