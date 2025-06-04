@@ -123,11 +123,9 @@ class AuthControllerTest {
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginDTO)))
-                .andExpect(result -> assertTrue(
-                        result.getResolvedException() instanceof RuntimeException &&
-                                result.getResolvedException().getMessage().equals("Authentication failed")
-                ));
+                .andExpect(status().isUnauthorized());
     }
+
 
 
 }
