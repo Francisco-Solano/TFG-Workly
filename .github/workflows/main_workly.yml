@@ -7,58 +7,35 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
 
-      - name: Configurar Java
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'microsoft'
-
-      - name: Construir con Maven
-        run: |
-          cd BackEnd/TFG-Workly
-          mvn clean install
-
-      - name: Verificar archivos generados
+      - name: Verificar que el JAR existe
         run: |
           ls -la BackEnd/TFG-Workly/target
 
-      - name: Cargar artefacto para despliegue
+      - name: Subir artefacto JAR precompilado
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: '**/target/*.jar'   # Flexible, compatible con múltiples carpetas
+          path: BackEnd/TFG-Workly/target/*.jar
 
-  deploy:
+  publicar:
     runs-on: ubuntu-latest
-    needs: build
+    needs: deploy
     environment:
       name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write
-      contents: read
 
     steps:
-      - name: Descargar artefacto desde la etapa de construcción
+      - name: Descargar artefacto
         uses: actions/download-artifact@v4
         with:
           name: java-app
           path: .
-
-      - name: Verificar archivos descargados
-        run: |
-          ls -la
-          
-      - name: List all files after downloading artifact
-        run: find . -type f
 
       - name: Iniciar sesión en Azure
         uses: azure/login@v2
@@ -74,5 +51,6 @@ jobs:
           app-name: 'Workly'
           slot-name: 'Production'
           package: '*.jar'
+
 
 
