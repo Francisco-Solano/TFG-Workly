@@ -36,7 +36,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: '${{ github.workspace }}/BackEnd/TFG-Workly/target/*.jar'
+          path: BackEnd/TFG-Workly/target/TFG-Workly-0.0.1-SNAPSHOT.jar
+
           
 
   deploy:
@@ -54,6 +55,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: java-app
+          
+      - name: Rename JAR for deployment
+        run: mv TFG-Workly-0.0.1-SNAPSHOT.jar app.jar
+    
       
       - name: Login to Azure
         uses: azure/login@v2
@@ -68,6 +73,7 @@ jobs:
         with:
           app-name: 'Workly'
           slot-name: 'Production'
-          package: 'java-app/*.jar'
+          package: 'app.jar'
+
 
           
