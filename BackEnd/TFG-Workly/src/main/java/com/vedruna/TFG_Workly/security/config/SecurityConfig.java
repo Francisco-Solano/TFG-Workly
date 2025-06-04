@@ -50,6 +50,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/usuarios/email/**").permitAll()
+                .requestMatchers("/").permitAll()
                 .requestMatchers("/api/v1/usuarios/**").hasRole("USER")
                 .requestMatchers("/api/v1/proyectos/**").hasRole("USER")
                 .anyRequest().authenticated();
