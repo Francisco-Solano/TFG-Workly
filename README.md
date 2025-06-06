@@ -130,12 +130,19 @@ Puedes consultar la documentación técnica, diagramas y casos de prueba en:
 
 ## 🚀 Guía de uso
 
-1. Regístrate como nuevo usuario.
+1. Regístrate como nuevo usuario o inicia sesión.
 2. Crea un proyecto desde tu panel.
 3. Añade columnas (tablas) al proyecto.
 4. Añade tareas y subtareas dentro de cada tabla.
 5. Invita a colaboradores por correo.
 6. Cambia el estado de las tareas, muévelas y edítalas cuando lo necesites.
+
+
+1. Registrarse: El usuario puede registrarse rellenando los campos que se indican en la imagen y pulsando el boton de registrarse. También puede iniciar sesión si ya tiene una cuenta pulsando el botón de iniciar sesión.
+   ![Registro](ruta/a/la/imagen.png)
+
+
+
 
 ---
 
