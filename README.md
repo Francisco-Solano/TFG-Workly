@@ -103,7 +103,7 @@
 
 Puedes consultar la documentación técnica, diagramas y casos de prueba en:
 
-🔗 [Documentación Workly (Starlight)]([https://tudocumentacion.starlight.dev](https://github.com/Francisco-Solano/DocumentacionWorkly))
+🔗 [Documentación Workly (Starlight)](https://github.com/Francisco-Solano/Documentacion-TFG-Workly)
 
 ---
 ---
@@ -172,5 +172,5 @@ No se permite su uso comercial sin consentimiento previo del autor.
 ## 📬 Contacto
 
 📧 franciscosolanoleon@gmail.com
-🔗 [LinkedIn](https://linkedin.com/in/franciscoleon)
+🔗 [LinkedIn](https://linkedin.com)
 
