@@ -50,15 +50,6 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install dependencies for Frontend
-        run: |
-          cd FrontEnd/frontend
-          npm install
-
-      - name: Build Frontend
-        run: |
-          cd FrontEnd/frontend
-          npm run build
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
