@@ -11,11 +11,7 @@ import java.util.List;
 @Repository
 public interface ITareaRepository extends JpaRepository<Tarea,Integer> {
     List<Tarea> findByTabla_TablaId(Integer tablaId);
-    List<Tarea> findByProyecto_ProyectoId(Integer proyectoId);
-    List<Tarea> findByEstado(String estado);
-    List<Tarea> findByPrioridad(String prioridad);
-    List<Tarea> findByFechaLimiteBefore(Date fecha);
-    List<Tarea> findByTituloContainingIgnoreCase(String texto); // búsqueda por título
+
 
 
 }

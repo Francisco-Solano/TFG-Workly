@@ -10,6 +10,6 @@ public class CrearSubtareaDTO {
 
     @Getter
     @Setter
-    private Integer tareaId; // ID de la tarea asociada
+    private Integer tareaId;
 
 }

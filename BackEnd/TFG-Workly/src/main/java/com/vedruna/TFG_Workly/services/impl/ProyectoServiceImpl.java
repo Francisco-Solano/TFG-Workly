@@ -39,19 +39,25 @@ public class ProyectoServiceImpl implements ProyectoServiceI {
         this.proyectoRepository = proyectoRepository;
         this.usuarioRepository = usuarioRepository;
     }
+
+    //Implementacion de la creacion del proyecto
     @Override
     public ProyectoDTO crearProyecto(CrearProyectoDTO dto, Usuario usuario) {
-       usuario = getUsuarioAutenticado(); // o con el código que mencionaste
-
+        //Obtenemos el usuario ya autenticado
+       usuario = getUsuarioAutenticado();
+        //Creamos y seteamos los valores del proyecto que haya puesto el usuario
         Proyecto proyecto = new Proyecto();
         proyecto.setNombre(dto.getNombre());
         proyecto.setVisibilidad(dto.isVisibilidad());
         proyecto.setUsuario(usuario);
 
+        //Guardamos y devolvemos el proyecto
         Proyecto proyectoGuardado = proyectoRepository.save(proyecto);
 
         return new ProyectoDTO(proyectoGuardado);
     }
+
+    //Metodo para obtener el usuario autenticado
     public Usuario getUsuarioAutenticado() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
@@ -62,7 +68,7 @@ public class ProyectoServiceImpl implements ProyectoServiceI {
 
 
 
-
+    //Implementacion de obtener el proyeto por id
     @Override
     public ProyectoDTO obtenerProyectoPorId(Integer id) {
         Proyecto proyecto = proyectoRepository.findById(id)
@@ -70,6 +76,7 @@ public class ProyectoServiceImpl implements ProyectoServiceI {
         return new ProyectoDTO(proyecto);
     }
 
+    //Implementacion para obtener los proyectos compartidos contigo
     @Override
     public List<ProyectoDTO> obtenerProyectosComoColaborador(Integer usuarioId) {
         List<Colaborador> colaboraciones = colaboradorRepository.findByUsuario_UsuarioId(usuarioId);
@@ -78,7 +85,7 @@ public class ProyectoServiceImpl implements ProyectoServiceI {
                 .collect(Collectors.toList());
     }
 
-
+    //Implementacion para actualizar el proyecto
     @Override
     public ProyectoDTO actualizarProyecto(Integer id, ProyectoDTO proyectoDTO) {
         Proyecto proyecto = proyectoRepository.findById(id)
@@ -93,6 +100,7 @@ public class ProyectoServiceImpl implements ProyectoServiceI {
         return new ProyectoDTO(actualizado);
     }
 
+    //Implementacion para eliminar el proyecto
     @Override
     public void eliminarProyecto(Integer id) {
         if (!proyectoRepository.existsById(id)) {
@@ -101,6 +109,7 @@ public class ProyectoServiceImpl implements ProyectoServiceI {
         proyectoRepository.deleteById(id);
     }
 
+    //Implementacion para mostrar los proyectos del usuario
     @Override
     public List<ProyectoDTO> listarProyectosUsuario() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -116,20 +125,21 @@ public class ProyectoServiceImpl implements ProyectoServiceI {
     }
 
 
-
+    //Implementacion para añadir un colaborador
     @Override
     public void añadirColaborador(Integer proyectoId, Integer usuarioId, String rol) {
+        //Obtenemos proyecto y usuario
         Proyecto proyecto = proyectoRepository.findById(proyectoId)
                 .orElseThrow(() -> new EntityNotFoundException("Proyecto no encontrado"));
 
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
-
+        //Verificamos si ya existe el colaborador
         boolean yaEsColaborador = colaboradorRepository.existsByProyecto_ProyectoIdAndProyecto_Usuario_UsuarioId(proyectoId, usuarioId);
         if (yaEsColaborador) {
             throw new IllegalArgumentException("El usuario ya es colaborador de este proyecto");
         }
-
+        //Creamos y guardamos el colaborador
         Colaborador nuevoColaborador = new Colaborador();
         nuevoColaborador.setProyecto(proyecto);
         nuevoColaborador.setUsuario(usuario);
@@ -138,7 +148,7 @@ public class ProyectoServiceImpl implements ProyectoServiceI {
         colaboradorRepository.save(nuevoColaborador);
     }
 
-
+    //Implementacion para eliminar el colaborador
     @Override
     public void eliminarColaborador(Integer proyectoId, Integer usuarioId) {
         Colaborador colaborador = colaboradorRepository.findByProyecto_ProyectoIdAndUsuario_UsuarioId(proyectoId, usuarioId)
@@ -147,7 +157,7 @@ public class ProyectoServiceImpl implements ProyectoServiceI {
         colaboradorRepository.delete(colaborador);
     }
 
-
+    //Implementacion para mostrar los colaboradores que hay en el proyecto
     @Override
     public List<UsuarioDTO> listarColaboradores(Integer proyectoId) {
         List<Colaborador> colaboradores = colaboradorRepository.findByProyecto_ProyectoId(proyectoId);

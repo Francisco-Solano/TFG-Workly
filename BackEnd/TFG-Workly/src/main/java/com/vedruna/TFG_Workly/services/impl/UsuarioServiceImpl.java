@@ -48,11 +48,6 @@ public class UsuarioServiceImpl implements UsuarioServiceI {
     }
 
 
-
-
-
-
-
     @Override
     public UsuarioDTO obtenerUsuarioPorId(Integer userid) {
         Usuario user = userRepository.findById(userid).orElseThrow(() -> new EmptyResultDataAccessException("Usuario no encontrado", 1));

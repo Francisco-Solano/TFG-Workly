@@ -1,6 +1,6 @@
 package com.vedruna.TFG_Workly.services;
 
-//import com.vedruna.TFG_Workly.dto.CrearTareaDTO;
+
 import com.vedruna.TFG_Workly.dto.CrearTareaDTO;
 import com.vedruna.TFG_Workly.dto.TareaDTO;
 
@@ -25,7 +25,7 @@ public interface TareaServiceI {
 
     void actualizarPosicionTarea(Integer tareaId, Integer nuevaPosicion);
 
-    // Cambiar estado de la tarea (por ejemplo: "Pendiente", "En progreso", "Hecho")
+    // Cambiar estado de la tarea
     void cambiarEstado(Integer tareaId, String nuevoEstado);
 
     // Establecer o actualizar fecha límite

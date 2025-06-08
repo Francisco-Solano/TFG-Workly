@@ -32,7 +32,7 @@ public class TablaServiceImpl implements TablaServiceI {
         Tabla tabla = new Tabla();
         tabla.setNombre(tablaDTO.getNombre());
         tabla.setProyecto(proyecto);
-        tabla.setPosicion(0); // Valor por defecto, si quieres
+        tabla.setPosicion(0); // Valor por defecto
         tabla.setColor("#FFFFFF");
         tabla.setTareas(new ArrayList<>());
 

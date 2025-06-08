@@ -14,11 +14,6 @@ public interface IProyectoRepository extends JpaRepository<Proyecto, Integer> {
     List<Proyecto> findByUsuario_UsuarioId(Integer usuarioId);
 
 
-    // Buscar proyectos por visibilidad
-    List<Proyecto> findByVisibilidad(Boolean visibilidad);
-
-    // Buscar proyectos donde haya un colaborador con ese usuarioId
-    List<Proyecto> findByColaboradoresUsuarioUsuarioId(Integer usuarioId);
 
 }
 

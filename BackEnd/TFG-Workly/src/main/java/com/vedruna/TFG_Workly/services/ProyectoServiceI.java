@@ -16,22 +16,22 @@ public interface ProyectoServiceI {
 
     List<ProyectoDTO> obtenerProyectosComoColaborador(Integer usuarioId);
 
-    // Actualizar proyecto (nombre, visibilidad, etc.)
+    // Actualizar proyecto
     ProyectoDTO actualizarProyecto(Integer id, ProyectoDTO proyectoDTO);
 
-    // Eliminar proyecto (solo si el usuario es admin del mismo)
+    // Eliminar proyecto
     void eliminarProyecto(Integer id);
 
-    // Listar todos los proyectos del usuario autenticado (admin o colaborador)
+    // Listar todos los proyectos del usuario autenticado
     List<ProyectoDTO> listarProyectosUsuario();
 
-    // Añadir un colaborador al proyecto (solo admin)
+    // Añadir un colaborador al proyecto
     void añadirColaborador(Integer proyectoId, Integer usuarioId, String rol);
 
-    // Eliminar colaborador de un proyecto (solo admin)
+    // Eliminar colaborador de un proyecto
     void eliminarColaborador(Integer proyectoId, Integer usuarioId);
 
-    // Listar colaboradores de un proyecto (admin y miembros)
+    // Listar colaboradores de un proyecto
     List<UsuarioDTO> listarColaboradores(Integer proyectoId);
 
 

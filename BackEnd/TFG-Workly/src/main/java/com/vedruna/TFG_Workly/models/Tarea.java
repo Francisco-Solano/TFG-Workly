@@ -28,13 +28,13 @@ public class Tarea {
     private String descripcion;
 
     @Column(name = "estado")
-    private String estado; // Podrías usar Enum
+    private String estado;
 
     @Column(name = "prioridad")
-    private String prioridad; // También recomendable usar Enum
+    private String prioridad;
 
     @ManyToOne
-    @JoinColumn(name = "proyecto_id") // Asegúrate que este sea el nombre correcto de la columna
+    @JoinColumn(name = "proyecto_id")
     private Proyecto proyecto;
 
 

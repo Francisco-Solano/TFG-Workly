@@ -13,6 +13,6 @@ public class CrearTablaDTO {
     @Getter
     @Setter
 
-    private Integer IdProyecto; //La i en minuscula al ponerlo en postman
+    private Integer IdProyecto;
 
 }

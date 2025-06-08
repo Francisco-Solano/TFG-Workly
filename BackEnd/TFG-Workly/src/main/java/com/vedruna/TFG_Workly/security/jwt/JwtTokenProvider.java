@@ -19,8 +19,6 @@ import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-
-    // Cambiamos a SLF4J Logger
     private static final Logger log = LoggerFactory.getLogger(JwtTokenProvider.class);
     @Getter
     @Value("${app.security.jwt.secret}")
@@ -29,6 +27,7 @@ public class JwtTokenProvider {
     @Value("${app.security.jwt.expiration}")
     Long jwtDurationSeconds;
 
+    //Metodo que genera el token
     public String generateToken(Authentication authentication) {
         Usuario user = (Usuario) authentication.getPrincipal();
 
@@ -75,7 +74,7 @@ public class JwtTokenProvider {
                 .build();
 
         Claims claims = parser.parseClaimsJws(token).getBody();
-        // El subject lo pusiste como user.getEmail()
+
         return claims.getSubject();
     }
 

@@ -16,8 +16,8 @@ public class TablaDTO {
     private String nombre;
     private int posicion;
     private String color;
-    private Integer proyectoId; // Solo el ID del proyecto asociado
-    private List<TareaDTO> tareas; // Mapeamos las tareas asociadas
+    private Integer proyectoId;
+    private List<TareaDTO> tareas;
 
 
     public TablaDTO(Tabla tabla) {
@@ -28,7 +28,7 @@ public class TablaDTO {
         this.proyectoId = tabla.getProyecto().getProyectoId();
 
         this.tareas = tabla.getTareas().stream()
-                .map(TareaDTO::new) // Mapeamos las tareas a su correspondiente DTO
+                .map(TareaDTO::new)
                 .collect(Collectors.toList());
 
 

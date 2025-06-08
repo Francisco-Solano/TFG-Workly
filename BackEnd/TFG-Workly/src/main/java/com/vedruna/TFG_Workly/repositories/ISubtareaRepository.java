@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface ISubtareaRepository extends JpaRepository<Subtarea,Integer> {
     List<Subtarea> findByTarea_TareaId(Integer tareaId);
-    Long countByTarea_TareaIdAndEstado(Integer tareaId, String estado);
+
 
 }

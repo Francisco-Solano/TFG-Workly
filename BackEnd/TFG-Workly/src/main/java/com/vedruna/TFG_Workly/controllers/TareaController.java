@@ -18,34 +18,39 @@ public class TareaController {
 
     private final TareaServiceI tareaService;
 
+    //Crear tarea
     @PostMapping("/crear")
     public ResponseEntity<TareaDTO> crearTarea(@Valid @RequestBody CrearTareaDTO crearTareaDTO) {
         return ResponseEntity.ok(tareaService.crearTarea(crearTareaDTO));
     }
 
-
+    //Obtener tarea por id
     @GetMapping("/{id}")
     public ResponseEntity<TareaDTO> obtenerTareaPorId(@PathVariable Integer id) {
         return ResponseEntity.ok(tareaService.obtenerTareaPorId(id));
     }
 
+    //Actualizar tarea por id
     @PutMapping("/{id}")
     public ResponseEntity<TareaDTO> actualizarTarea(@PathVariable Integer id, @RequestBody CrearTareaDTO tareaDTO) {
         return ResponseEntity.ok(tareaService.actualizarTarea(id, tareaDTO));
     }
 
+    //Eliminar tarea por id
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarTarea(@PathVariable Integer id) {
         tareaService.eliminarTarea(id);
         return ResponseEntity.noContent().build();
     }
 
+    //Mover tarea a otra tabla (Usando drag and drop)
     @PostMapping("/{id}/mover/{tablaId}")
     public ResponseEntity<Void> moverTarea(@PathVariable Integer id, @PathVariable Integer tablaId) {
         tareaService.moverTarea(id, tablaId);
         return ResponseEntity.ok().build();
     }
 
+    //Actualizar la posicion de la tarea dentro de la tabla
     @PatchMapping("/{id}/posicion")
     public ResponseEntity<Void> actualizarPosicionTarea(
             @PathVariable Integer id,
@@ -54,12 +59,14 @@ public class TareaController {
         return ResponseEntity.ok().build();
     }
 
+    //Actualizar o asignar fecha limite
     @PostMapping("/{id}/fechaLimite")
     public ResponseEntity<Void> actualizarFechaLimite(@PathVariable Integer id, @RequestParam Date fechaLimite) {
         tareaService.actualizarFechaLimite(id, fechaLimite);
         return ResponseEntity.ok().build();
     }
 
+    //Listar tareas por id de tabla
     @GetMapping("/tabla/{tablaId}")
     public ResponseEntity<List<TareaDTO>> listarTareasPorTabla(@PathVariable Integer tablaId) {
         return ResponseEntity.ok(tareaService.listarTareasPorTabla(tablaId));

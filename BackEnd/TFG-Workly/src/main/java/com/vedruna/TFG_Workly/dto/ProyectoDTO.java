@@ -16,7 +16,7 @@ public class ProyectoDTO {
     private String nombre;
     private boolean visibilidad;
     private Integer adminId;
-    private List<Integer> tablaIds; // Lista de IDs de las tablas asociadas al proyecto
+    private List<Integer> tablaIds;
 
 
     public ProyectoDTO(Proyecto proyecto) {

@@ -24,14 +24,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProyectoController {
 
-
     private final ProyectoServiceI proyectoService;
-
-    private final UsuarioServiceI usuarioService;
-
     private final IUsuarioRepository usuarioRepository;
-
-    private final IColaboradorRepository colaboradorRepository;
 
 
 
@@ -67,25 +61,28 @@ public class ProyectoController {
 
 
 
-
+    //Obtener proyecto por id
     @GetMapping("/{id}")
     public ResponseEntity<ProyectoDTO> obtenerProyecto(@PathVariable Integer id) {
         ProyectoDTO proyecto = proyectoService.obtenerProyectoPorId(id);
         return ResponseEntity.ok(proyecto);
     }
 
+    //Actualizar proyecto por id
     @PutMapping("/{id}")
     public ResponseEntity<ProyectoDTO> actualizarProyecto(@PathVariable Integer id, @RequestBody ProyectoDTO proyectoDTO) {
         ProyectoDTO actualizado = proyectoService.actualizarProyecto(id, proyectoDTO);
         return ResponseEntity.ok(actualizado);
     }
 
+    //Eliminar proyecto por id
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarProyecto(@PathVariable Integer id) {
         proyectoService.eliminarProyecto(id);
         return ResponseEntity.noContent().build();
     }
 
+    //Obtener todos los proyectos del usuario
     @GetMapping("/mios")
     public ResponseEntity<List<ProyectoDTO>> listarProyectosUsuario() {
         return ResponseEntity.ok(proyectoService.listarProyectosUsuario());

@@ -32,7 +32,7 @@ public class Proyecto {
     private Usuario usuario;
 
     @OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Tabla> tablas = new ArrayList<>();  // Inicializa aquí para evitar null
+    private List<Tabla> tablas = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -27,8 +27,11 @@ public class ColaboradorServiceImpl implements ColaboradorServiceI {
     @Autowired
     private IUsuarioRepository usuarioRepository;
 
+
+    //Implementacion del metodo para añadir un colaborador al proyecto
     @Override
     public ColaboradorDTO añadirColaborador(Integer proyectoId, Integer usuarioId, String rol) {
+        //Obtenemos el proyecto y el usuario
         Proyecto proyecto = proyectoRepository.findById(proyectoId)
                 .orElseThrow(() -> new EntityNotFoundException("Proyecto no encontrado"));
 
@@ -40,15 +43,17 @@ public class ColaboradorServiceImpl implements ColaboradorServiceI {
         if (existente.isPresent()) {
             throw new IllegalArgumentException("El usuario ya es colaborador de este proyecto");
         }
-
+        //Crea y añade los datos del colaborador
         Colaborador colaborador = new Colaborador();
         colaborador.setProyecto(proyecto);
         colaborador.setUsuario(usuario);
         colaborador.setRol(rol);
 
+        //Guarda y devuelve el colaborador
         Colaborador guardado = colaboradorRepository.save(colaborador);
         return new ColaboradorDTO(guardado);
     }
+
 
     @Override
     public List<ColaboradorDTO> obtenerColaboradoresDeProyecto(Integer proyectoId) {
@@ -74,6 +79,7 @@ public class ColaboradorServiceImpl implements ColaboradorServiceI {
         colaboradorRepository.deleteById(colaboradorId);
     }
 
+    //Metodo que verifica si el colaborador ya existe
     @Override
     public boolean esColaborador(Integer proyectoId, Integer usuarioId) {
         return colaboradorRepository.existsByProyecto_ProyectoIdAndProyecto_Usuario_UsuarioId(proyectoId, usuarioId);

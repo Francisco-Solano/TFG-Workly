@@ -19,36 +19,40 @@ import java.util.List;
 public class TablaController {
 
     private final TablaServiceI tablaService;
-    private final ProyectoServiceI proyectoService;
 
+    //Crear una tabla
     @PostMapping("/crear")
     public ResponseEntity<TablaDTO> crearTabla(@RequestBody @Valid CrearTablaDTO crearTablaDTO) {
         TablaDTO tablaCreada = tablaService.crearTabla(crearTablaDTO.getIdProyecto(), crearTablaDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(tablaCreada);
     }
 
-
+    //Obtener tabla por id
     @GetMapping("/{tablaId}")
     public ResponseEntity<TablaDTO> obtenerTabla(@PathVariable Integer tablaId) {
         return ResponseEntity.ok(tablaService.obtenerTablaPorId(tablaId));
     }
 
+    //Mostrar todas las tablas que hay dentro de un proyecto
     @GetMapping("/proyecto/{proyectoId}")
     public ResponseEntity<List<TablaDTO>> listarTablasPorProyecto(@PathVariable Integer proyectoId) {
         return ResponseEntity.ok(tablaService.listarTablasPorProyecto(proyectoId));
     }
 
+    //Actualizar tabla por id
     @PutMapping("/{tablaId}")
     public ResponseEntity<TablaDTO> actualizarTabla(@PathVariable Integer tablaId, @RequestBody TablaDTO tablaDTO) {
         return ResponseEntity.ok(tablaService.actualizarTabla(tablaId, tablaDTO));
     }
 
+    //Canbiar posicion de una tabla (Usando drag and drop en el front)
     @PatchMapping("/{tablaId}/posicion")
     public ResponseEntity<Void> cambiarPosicion(@PathVariable Integer tablaId, @RequestParam int posicion) {
         tablaService.cambiarPosicion(tablaId, posicion);
         return ResponseEntity.noContent().build();
     }
 
+    //Eliminar tabla por id
     @DeleteMapping("/{tablaId}")
     public ResponseEntity<Void> eliminarTabla(@PathVariable Integer tablaId) {
         tablaService.eliminarTabla(tablaId);

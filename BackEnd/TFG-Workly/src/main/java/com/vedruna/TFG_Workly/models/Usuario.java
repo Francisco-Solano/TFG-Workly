@@ -40,7 +40,6 @@ public class Usuario implements UserDetails {
     private String foto;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
-    // @JsonIgnore  // ← opcional, si serializas este objeto
     private List<Proyecto> proyectos;
 
     // Implementación de UserDetails

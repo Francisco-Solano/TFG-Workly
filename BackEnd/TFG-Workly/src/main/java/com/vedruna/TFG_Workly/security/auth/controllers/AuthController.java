@@ -38,9 +38,12 @@ public class AuthController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    //Metodo para registrar un usuario
     @PostMapping("/register")
     public UsuarioResponseDTO register(@RequestBody UserRegisterDTO userDTO) {
+        //Creamos un usuario
         Usuario usuario = new Usuario();
+        //Seteamos los valores que ha escrito el usuario
         usuario.setEmail(userDTO.email());
         usuario.setUsername(userDTO.username());
         usuario.setPassword(passwordEncoder.encode(userDTO.password()));
@@ -49,10 +52,10 @@ public class AuthController {
                 .orElseThrow(() -> new RolNotFoundException("Rol no encontrado"));
 
         usuario.setUserRol(rolUser);
-
+        //Guardamos el usuario
         Usuario savedUser = usuarioRepository.save(usuario);
 
-        // Devolver solo lo necesario, en forma de DTO
+        //Devolvemos el usuario creado con todos los datos
         return new UsuarioResponseDTO(
                 savedUser.getUsuarioId(),
                 savedUser.getUsername(),
@@ -62,20 +65,23 @@ public class AuthController {
     }
 
 
-
+    //Loguear un usuario
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest loginDTO){
+        //Creamos un Authentication token
         Authentication authInputToken =
                 new UsernamePasswordAuthenticationToken(loginDTO.email(), loginDTO.password());
-
+        //Autenticamos al usuario
         Authentication authentication = this.authManager.authenticate(authInputToken);
         Usuario user = (Usuario) authentication.getPrincipal();
 
+        //Creamos su token
         String token = jwtTokenProvider.generateToken(authentication);
 
+        //Devolvemos el token junto con otros datoss si no hay errores.
         return new LoginResponse(
                 user.getEmail(),
-                List.of(user.getUserRol().getRolName()), // Lista de roles como string
+                List.of(user.getUserRol().getRolName()),
                 token, user.getUsuarioId()
         );
     }

@@ -41,7 +41,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(withDefaults()) // <-- IMPORTANTE: activa CORS y usa tu CorsConfig
+                .cors(withDefaults()) // <-- Activa CORS y usa CorsConfig
                 .csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

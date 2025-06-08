@@ -42,18 +42,7 @@ public class SubtareaController {
         return ResponseEntity.ok(subtareaService.actualizarSubtarea(subtareaId, subtareaDTO));
     }
 
-    // Cambiar solo el estado de una subtarea
-    /* YA LO HACE ACTUALIZAR SUBTAREA
-    @PatchMapping("/{subtareaId}/estado")
-    public ResponseEntity<Void> cambiarEstado(
-            @PathVariable Integer subtareaId,
-            @RequestParam String estado
-    ) {
-        subtareaService.cambiarEstado(subtareaId, estado);
-        return ResponseEntity.noContent().build();
-    }
 
-     */
 
     // Listar todas las subtareas de una tarea
     @GetMapping("/tarea/{tareaId}")

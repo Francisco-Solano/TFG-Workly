@@ -21,7 +21,7 @@ public class TareaDTO {
 
     private Date fechaLimite;
 
-    // Relaciones opcionales (según tu lógica de negocio)
+
     private List<SubtareaDTO> subtareas;
 
 
